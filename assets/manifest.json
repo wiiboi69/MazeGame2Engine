@@ -1,0 +1,1907 @@
+{
+ "stage": {
+  "Blue": {
+   "index": 1,
+   "name": "Blue",
+   "file": "backgrounds/stage/001_Blue.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 261.66969147005443,
+   "cy": 179.99999999999991
+  },
+  "backdrop1": {
+   "index": 2,
+   "name": "backdrop1",
+   "file": "backgrounds/stage/002_backdrop1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 261.66969,
+   "cy": 180
+  },
+  "backdrop2": {
+   "index": 3,
+   "name": "backdrop2",
+   "file": "backgrounds/stage/003_backdrop2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 261.66969,
+   "cy": 204.00725999999983
+  }
+ },
+ "tiles": {
+  "1": {
+   "index": 1,
+   "name": "BIG",
+   "file": "tiles/001_BIG.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 17.87500000000003,
+   "cy": 17.875
+  },
+  "2": {
+   "index": 2,
+   "name": "costume1",
+   "file": "tiles/002_costume1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 0,
+   "cy": 0
+  },
+  "3": {
+   "index": 3,
+   "name": "Wood-0",
+   "file": "tiles/003_Wood-0.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "4": {
+   "index": 4,
+   "name": "Wood-1",
+   "file": "tiles/004_Wood-1.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "5": {
+   "index": 5,
+   "name": "Wood-2",
+   "file": "tiles/005_Wood-2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "6": {
+   "index": 6,
+   "name": "Wood-3",
+   "file": "tiles/006_Wood-3.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "7": {
+   "index": 7,
+   "name": "Wood-4",
+   "file": "tiles/007_Wood-4.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "8": {
+   "index": 8,
+   "name": "Wood-5",
+   "file": "tiles/008_Wood-5.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "9": {
+   "index": 9,
+   "name": "Block-Gold",
+   "file": "tiles/009_Block-Gold.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "10": {
+   "index": 10,
+   "name": "Block-Wood",
+   "file": "tiles/010_Block-Wood.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "11": {
+   "index": 11,
+   "name": "tile006",
+   "file": "tiles/011_tile006.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "12": {
+   "index": 12,
+   "name": "tile007",
+   "file": "tiles/012_tile007.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "13": {
+   "index": 13,
+   "name": "tile008",
+   "file": "tiles/013_tile008.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "14": {
+   "index": 14,
+   "name": "tile003",
+   "file": "tiles/014_tile003.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "15": {
+   "index": 15,
+   "name": "tile004",
+   "file": "tiles/015_tile004.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "16": {
+   "index": 16,
+   "name": "tile005",
+   "file": "tiles/016_tile005.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "17": {
+   "index": 17,
+   "name": "tile000",
+   "file": "tiles/017_tile000.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "18": {
+   "index": 18,
+   "name": "tile001",
+   "file": "tiles/018_tile001.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "19": {
+   "index": 19,
+   "name": "tile002",
+   "file": "tiles/019_tile002.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "20": {
+   "index": 20,
+   "name": "conver_left",
+   "file": "tiles/020_conver_left.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "21": {
+   "index": 21,
+   "name": "conver_right",
+   "file": "tiles/021_conver_right.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "22": {
+   "index": 22,
+   "name": "ladder top",
+   "file": "tiles/022_ladder_top.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 6
+  },
+  "23": {
+   "index": 23,
+   "name": "ladder",
+   "file": "tiles/023_ladder.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "24": {
+   "index": 24,
+   "name": "gem1",
+   "file": "tiles/024_gem1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.069619999999986,
+   "cy": 8.089400000000012
+  },
+  "25": {
+   "index": 25,
+   "name": "gem2",
+   "file": "tiles/025_gem2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.069619999999986,
+   "cy": 8.089399999999983
+  },
+  "26": {
+   "index": 26,
+   "name": "gem3",
+   "file": "tiles/026_gem3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.069619999999986,
+   "cy": 8.089399999999983
+  },
+  "27": {
+   "index": 27,
+   "name": "gem4",
+   "file": "tiles/027_gem4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.069619999999986,
+   "cy": 8.089399999999983
+  },
+  "28": {
+   "index": 28,
+   "name": "player03Walk1",
+   "file": "tiles/028_player03Walk1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.027265
+  },
+  "29": {
+   "index": 29,
+   "name": "npc_1",
+   "file": "tiles/029_npc_1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "30": {
+   "index": 30,
+   "name": "npc_danger",
+   "file": "tiles/030_npc_danger.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "31": {
+   "index": 31,
+   "name": "Bush",
+   "file": "tiles/031_Bush.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 13.983321451752602,
+   "cy": 3.0723055457544888
+  },
+  "32": {
+   "index": 32,
+   "name": "cloud",
+   "file": "tiles/032_cloud.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "33": {
+   "index": 33,
+   "name": "Orange-1",
+   "file": "tiles/033_Orange-1.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "34": {
+   "index": 34,
+   "name": "Orange-2",
+   "file": "tiles/034_Orange-2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "35": {
+   "index": 35,
+   "name": "Orange-3",
+   "file": "tiles/035_Orange-3.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "36": {
+   "index": 36,
+   "name": "Orange-4",
+   "file": "tiles/036_Orange-4.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "37": {
+   "index": 37,
+   "name": "Orange-5",
+   "file": "tiles/037_Orange-5.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "38": {
+   "index": 38,
+   "name": "Orange-6",
+   "file": "tiles/038_Orange-6.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "39": {
+   "index": 39,
+   "name": "Orange-7",
+   "file": "tiles/039_Orange-7.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "40": {
+   "index": 40,
+   "name": "Orange-8",
+   "file": "tiles/040_Orange-8.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "41": {
+   "index": 41,
+   "name": "Orange-9",
+   "file": "tiles/041_Orange-9.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "42": {
+   "index": 42,
+   "name": "pipe1",
+   "file": "tiles/042_pipe1.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "43": {
+   "index": 43,
+   "name": "pipe2",
+   "file": "tiles/043_pipe2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "44": {
+   "index": 44,
+   "name": "pipe3",
+   "file": "tiles/044_pipe3.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 14,
+   "cy": 16
+  },
+  "45": {
+   "index": 45,
+   "name": "pipe4",
+   "file": "tiles/045_pipe4.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "46": {
+   "index": 46,
+   "name": "Star",
+   "file": "tiles/046_Star.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 13.6058850732272,
+   "cy": 23.185436135748063
+  },
+  "47": {
+   "index": 47,
+   "name": "EndBox",
+   "file": "tiles/047_EndBox.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 26,
+   "cy": 26
+  },
+  "48": {
+   "index": 48,
+   "name": "Black-Zag",
+   "file": "tiles/048_Black-Zag.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 6,
+   "cy": 16
+  },
+  "49": {
+   "index": 49,
+   "name": "Black",
+   "file": "tiles/049_Black.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "50": {
+   "index": 50,
+   "name": "grass8",
+   "file": "tiles/050_grass8.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "51": {
+   "index": 51,
+   "name": "grass6",
+   "file": "tiles/051_grass6.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "52": {
+   "index": 52,
+   "name": "grass10",
+   "file": "tiles/052_grass10.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 15
+  },
+  "53": {
+   "index": 53,
+   "name": "grass1",
+   "file": "tiles/053_grass1.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 15,
+   "cy": 0
+  },
+  "54": {
+   "index": 54,
+   "name": "grass2",
+   "file": "tiles/054_grass2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "55": {
+   "index": 55,
+   "name": "grass4",
+   "file": "tiles/055_grass4.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "56": {
+   "index": 56,
+   "name": "grass5",
+   "file": "tiles/056_grass5.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 0
+  },
+  "57": {
+   "index": 57,
+   "name": "grass7",
+   "file": "tiles/057_grass7.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "58": {
+   "index": 58,
+   "name": "grass9",
+   "file": "tiles/058_grass9.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "59": {
+   "index": 59,
+   "name": "grass12",
+   "file": "tiles/059_grass12.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "60": {
+   "index": 60,
+   "name": "grass13",
+   "file": "tiles/060_grass13.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "61": {
+   "index": 61,
+   "name": "grass11",
+   "file": "tiles/061_grass11.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "62": {
+   "index": 62,
+   "name": "grass15",
+   "file": "tiles/062_grass15.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "63": {
+   "index": 63,
+   "name": "grass14",
+   "file": "tiles/063_grass14.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "64": {
+   "index": 64,
+   "name": "grass19",
+   "file": "tiles/064_grass19.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "65": {
+   "index": 65,
+   "name": "grass17",
+   "file": "tiles/065_grass17.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "66": {
+   "index": 66,
+   "name": "grass16",
+   "file": "tiles/066_grass16.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "67": {
+   "index": 67,
+   "name": "grass3",
+   "file": "tiles/067_grass3.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "68": {
+   "index": 68,
+   "name": "PiranhaPlant1",
+   "file": "tiles/068_PiranhaPlant1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 0,
+   "cy": 23.81393482240557
+  },
+  "69": {
+   "index": 69,
+   "name": "tile018",
+   "file": "tiles/069_tile018.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "70": {
+   "index": 70,
+   "name": "tile019",
+   "file": "tiles/070_tile019.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "71": {
+   "index": 71,
+   "name": "tile020",
+   "file": "tiles/071_tile020.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "72": {
+   "index": 72,
+   "name": "tile021",
+   "file": "tiles/072_tile021.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "73": {
+   "index": 73,
+   "name": "tile010",
+   "file": "tiles/073_tile010.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 8
+  },
+  "74": {
+   "index": 74,
+   "name": "logic_auto",
+   "file": "tiles/074_logic_auto.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.023944999999998,
+   "cy": 7.992005000000006
+  },
+  "75": {
+   "index": 75,
+   "name": "cloud2",
+   "file": "tiles/075_cloud2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 16
+  },
+  "76": {
+   "index": 76,
+   "name": "logic_player_death",
+   "file": "tiles/076_logic_player_death.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.023944999999998,
+   "cy": 7.992005000000006
+  },
+  "77": {
+   "index": 77,
+   "name": "door_ent",
+   "file": "tiles/077_door_ent.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.023934999999994,
+   "cy": 7.991995000000003
+  },
+  "78": {
+   "index": 78,
+   "name": "pipe_ent",
+   "file": "tiles/078_pipe_ent.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.023924999999991,
+   "cy": 7.991985
+  },
+  "79": {
+   "index": 79,
+   "name": "door_wide_ent",
+   "file": "tiles/079_door_wide_ent.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.023924999999991,
+   "cy": 7.991985
+  }
+ },
+ "player": {
+  "player-big-Walk1": {
+   "index": 1,
+   "name": "player-big-Walk1",
+   "file": "sprites/player/001_player-big-Walk1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710602642603988
+  },
+  "player-big-Walk2": {
+   "index": 2,
+   "name": "player-big-Walk2",
+   "file": "sprites/player/002_player-big-Walk2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-Walk3": {
+   "index": 3,
+   "name": "player-big-Walk3",
+   "file": "sprites/player/003_player-big-Walk3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-Walk4": {
+   "index": 4,
+   "name": "player-big-Walk4",
+   "file": "sprites/player/004_player-big-Walk4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-Turn": {
+   "index": 5,
+   "name": "player-big-Turn",
+   "file": "sprites/player/005_player-big-Turn.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "MarioJump": {
+   "index": 6,
+   "name": "MarioJump",
+   "file": "sprites/player/006_MarioJump.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-Crouch": {
+   "index": 7,
+   "name": "player-big-Crouch",
+   "file": "sprites/player/007_player-big-Crouch.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-air-Crouch": {
+   "index": 8,
+   "name": "player-big-air-Crouch",
+   "file": "sprites/player/008_player-big-air-Crouch.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 19.02234842450912
+  },
+  "player-big-lose-life": {
+   "index": 9,
+   "name": "player-big-lose-life",
+   "file": "sprites/player/009_player-big-lose-life.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710602642603988
+  },
+  "player-big-lose-life2": {
+   "index": 10,
+   "name": "player-big-lose-life2",
+   "file": "sprites/player/010_player-big-lose-life2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710602642603988
+  },
+  "player-big-slide1": {
+   "index": 11,
+   "name": "player-big-slide1",
+   "file": "sprites/player/011_player-big-slide1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.242940000000004,
+   "cy": 15.710604999999987
+  },
+  "player-big-slide2": {
+   "index": 12,
+   "name": "player-big-slide2",
+   "file": "sprites/player/012_player-big-slide2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.242940000000004,
+   "cy": 15.710604999999987
+  },
+  "player-big-slide3": {
+   "index": 13,
+   "name": "player-big-slide3",
+   "file": "sprites/player/013_player-big-slide3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.242940000000004,
+   "cy": 15.710604999999987
+  },
+  "player-big-slide4": {
+   "index": 14,
+   "name": "player-big-slide4",
+   "file": "sprites/player/014_player-big-slide4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.242940000000004,
+   "cy": 15.710604999999987
+  },
+  "player-big-slide5": {
+   "index": 15,
+   "name": "player-big-slide5",
+   "file": "sprites/player/015_player-big-slide5.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.242940000000004,
+   "cy": 15.710604999999987
+  },
+  "player-big-slide6": {
+   "index": 16,
+   "name": "player-big-slide6",
+   "file": "sprites/player/016_player-big-slide6.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.652275000000003
+  },
+  "player-big-drop-kick": {
+   "index": 17,
+   "name": "player-big-drop-kick",
+   "file": "sprites/player/017_player-big-drop-kick.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.242940000000004,
+   "cy": 15.710604999999987
+  },
+  "player-big-ladder-up1": {
+   "index": 18,
+   "name": "player-big-ladder-up1",
+   "file": "sprites/player/018_player-big-ladder-up1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-ladder-up2": {
+   "index": 19,
+   "name": "player-big-ladder-up2",
+   "file": "sprites/player/019_player-big-ladder-up2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-swim1": {
+   "index": 20,
+   "name": "player-big-swim1",
+   "file": "sprites/player/020_player-big-swim1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-swim2": {
+   "index": 21,
+   "name": "player-big-swim2",
+   "file": "sprites/player/021_player-big-swim2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-swim3": {
+   "index": 22,
+   "name": "player-big-swim3",
+   "file": "sprites/player/022_player-big-swim3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-swim4": {
+   "index": 23,
+   "name": "player-big-swim4",
+   "file": "sprites/player/023_player-big-swim4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "player-big-swim5": {
+   "index": 24,
+   "name": "player-big-swim5",
+   "file": "sprites/player/024_player-big-swim5.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710604999999987
+  },
+  "BIG": {
+   "index": 25,
+   "name": "BIG",
+   "file": "sprites/player/025_BIG.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 37.5,
+   "cy": 37.5
+  },
+  "mark": {
+   "index": 26,
+   "name": "mark",
+   "file": "sprites/player/026_mark.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 37.24596719801747,
+   "cy": 95.62383287682721
+  }
+ },
+ "enemy": {
+  "BIG": {
+   "index": 1,
+   "name": "BIG",
+   "file": "sprites/enemy/001_BIG.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 37.5,
+   "cy": 37.5
+  },
+  "pole": {
+   "index": 2,
+   "name": "pole",
+   "file": "sprites/enemy/002_pole.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8,
+   "cy": 16.29022348640453
+  },
+  "pole_hitbox": {
+   "index": 3,
+   "name": "pole_hitbox",
+   "file": "sprites/enemy/003_pole_hitbox.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 3.6250000000000284,
+   "cy": 14.629910000000052
+  },
+  "pipe_trigger": {
+   "index": 4,
+   "name": "pipe_trigger",
+   "file": "sprites/enemy/004_pipe_trigger.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 16,
+   "cy": 0
+  },
+  "door_trigger": {
+   "index": 5,
+   "name": "door_trigger",
+   "file": "sprites/enemy/005_door_trigger.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 13,
+   "cy": 38
+  },
+  "door_trigger_wide": {
+   "index": 6,
+   "name": "door_trigger_wide",
+   "file": "sprites/enemy/006_door_trigger_wide.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 22,
+   "cy": 38
+  },
+  "Endglobe": {
+   "index": 7,
+   "name": "Endglobe",
+   "file": "sprites/enemy/007_Endglobe.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 13,
+   "cy": 13
+  },
+  "nomal_walk1": {
+   "index": 8,
+   "name": "nomal_walk1",
+   "file": "sprites/enemy/008_nomal_walk1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "nomal_walk2": {
+   "index": 9,
+   "name": "nomal_walk2",
+   "file": "sprites/enemy/009_nomal_walk2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "nomal_walk3": {
+   "index": 10,
+   "name": "nomal_walk3",
+   "file": "sprites/enemy/010_nomal_walk3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "nomal_walk4": {
+   "index": 11,
+   "name": "nomal_walk4",
+   "file": "sprites/enemy/011_nomal_walk4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "nomal_walk5": {
+   "index": 12,
+   "name": "nomal_walk5",
+   "file": "sprites/enemy/012_nomal_walk5.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "nomal_walk6": {
+   "index": 13,
+   "name": "nomal_walk6",
+   "file": "sprites/enemy/013_nomal_walk6.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "nomal_walk7": {
+   "index": 14,
+   "name": "nomal_walk7",
+   "file": "sprites/enemy/014_nomal_walk7.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "nomal_walk8": {
+   "index": 15,
+   "name": "nomal_walk8",
+   "file": "sprites/enemy/015_nomal_walk8.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 7.826740000000001,
+   "cy": 15.710604999999987
+  },
+  "animated_spinning_globe": {
+   "index": 16,
+   "name": "animated_spinning_globe",
+   "file": "sprites/enemy/016_animated_spinning_globe.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe2": {
+   "index": 17,
+   "name": "animated_spinning_globe2",
+   "file": "sprites/enemy/017_animated_spinning_globe2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe3": {
+   "index": 18,
+   "name": "animated_spinning_globe3",
+   "file": "sprites/enemy/018_animated_spinning_globe3.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe4": {
+   "index": 19,
+   "name": "animated_spinning_globe4",
+   "file": "sprites/enemy/019_animated_spinning_globe4.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe5": {
+   "index": 20,
+   "name": "animated_spinning_globe5",
+   "file": "sprites/enemy/020_animated_spinning_globe5.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe6": {
+   "index": 21,
+   "name": "animated_spinning_globe6",
+   "file": "sprites/enemy/021_animated_spinning_globe6.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe7": {
+   "index": 22,
+   "name": "animated_spinning_globe7",
+   "file": "sprites/enemy/022_animated_spinning_globe7.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe8": {
+   "index": 23,
+   "name": "animated_spinning_globe8",
+   "file": "sprites/enemy/023_animated_spinning_globe8.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe9": {
+   "index": 24,
+   "name": "animated_spinning_globe9",
+   "file": "sprites/enemy/024_animated_spinning_globe9.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe10": {
+   "index": 25,
+   "name": "animated_spinning_globe10",
+   "file": "sprites/enemy/025_animated_spinning_globe10.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe11": {
+   "index": 26,
+   "name": "animated_spinning_globe11",
+   "file": "sprites/enemy/026_animated_spinning_globe11.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe12": {
+   "index": 27,
+   "name": "animated_spinning_globe12",
+   "file": "sprites/enemy/027_animated_spinning_globe12.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe13": {
+   "index": 28,
+   "name": "animated_spinning_globe13",
+   "file": "sprites/enemy/028_animated_spinning_globe13.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe14": {
+   "index": 29,
+   "name": "animated_spinning_globe14",
+   "file": "sprites/enemy/029_animated_spinning_globe14.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe15": {
+   "index": 30,
+   "name": "animated_spinning_globe15",
+   "file": "sprites/enemy/030_animated_spinning_globe15.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe16": {
+   "index": 31,
+   "name": "animated_spinning_globe16",
+   "file": "sprites/enemy/031_animated_spinning_globe16.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe17": {
+   "index": 32,
+   "name": "animated_spinning_globe17",
+   "file": "sprites/enemy/032_animated_spinning_globe17.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe18": {
+   "index": 33,
+   "name": "animated_spinning_globe18",
+   "file": "sprites/enemy/033_animated_spinning_globe18.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe19": {
+   "index": 34,
+   "name": "animated_spinning_globe19",
+   "file": "sprites/enemy/034_animated_spinning_globe19.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe20": {
+   "index": 35,
+   "name": "animated_spinning_globe20",
+   "file": "sprites/enemy/035_animated_spinning_globe20.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe21": {
+   "index": 36,
+   "name": "animated_spinning_globe21",
+   "file": "sprites/enemy/036_animated_spinning_globe21.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe22": {
+   "index": 37,
+   "name": "animated_spinning_globe22",
+   "file": "sprites/enemy/037_animated_spinning_globe22.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe23": {
+   "index": 38,
+   "name": "animated_spinning_globe23",
+   "file": "sprites/enemy/038_animated_spinning_globe23.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "animated_spinning_globe24": {
+   "index": 39,
+   "name": "animated_spinning_globe24",
+   "file": "sprites/enemy/039_animated_spinning_globe24.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 300,
+   "cy": 300
+  },
+  "BIG2": {
+   "index": 40,
+   "name": "BIG2",
+   "file": "sprites/enemy/040_BIG2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 266.54483430799166,
+   "cy": 266.5448343079924
+  },
+  "small": {
+   "index": 41,
+   "name": "small",
+   "file": "sprites/enemy/041_small.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 4.380391936696725,
+   "cy": 4.380391936696782
+  },
+  "costume1": {
+   "index": 42,
+   "name": "costume1",
+   "file": "sprites/enemy/042_costume1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 145,
+   "cy": 145
+  },
+  "danger-die": {
+   "index": 43,
+   "name": "danger-die",
+   "file": "sprites/enemy/043_danger-die.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710602642603988
+  },
+  "danger-die2": {
+   "index": 44,
+   "name": "danger-die2",
+   "file": "sprites/enemy/044_danger-die2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 14.301269999999988,
+   "cy": 15.710602642603988
+  }
+ },
+ "background": {
+  "Background-1-1": {
+   "index": 1,
+   "name": "Background-1-1",
+   "file": "backgrounds/001_Background-1-1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 128.07430662681668,
+   "cy": 179.90820499999987
+  },
+  "Background-1-2": {
+   "index": 2,
+   "name": "Background-1-2",
+   "file": "backgrounds/002_Background-1-2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 128.06846162681666,
+   "cy": 179.80301499999987
+  },
+  "Background-1-3": {
+   "index": 3,
+   "name": "Background-1-3",
+   "file": "backgrounds/003_Background-1-3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 128.15012499999997,
+   "cy": 179.80299500000004
+  },
+  "Background-1-4": {
+   "index": 4,
+   "name": "Background-1-4",
+   "file": "backgrounds/004_Background-1-4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 128.07296162681655,
+   "cy": 179.97993500000004
+  },
+  "Background-1-frount": {
+   "index": 5,
+   "name": "Background-1-frount",
+   "file": "backgrounds/005_Background-1-frount.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 131.12215,
+   "cy": 179.979925
+  },
+  "Background-1-back": {
+   "index": 6,
+   "name": "Background-1-back",
+   "file": "backgrounds/006_Background-1-back.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 286.9075666070497,
+   "cy": 191.6758514327486
+  },
+  "Background-1-1-L2": {
+   "index": 7,
+   "name": "Background-1-1-L2",
+   "file": "backgrounds/007_Background-1-1-L2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 128.07430662681668,
+   "cy": 179.9082049999998
+  },
+  "Background-1-frount3": {
+   "index": 8,
+   "name": "Background-1-frount3",
+   "file": "backgrounds/008_Background-1-frount3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 131.12215089554851,
+   "cy": 179.97993500000004
+  },
+  "size 100%": {
+   "index": 9,
+   "name": "size 100%",
+   "file": "backgrounds/009_size_100_.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 31.5,
+   "cy": 32.19999694824219
+  },
+  "big": {
+   "index": 10,
+   "name": "big",
+   "file": "backgrounds/010_big.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 236.57720057720064,
+   "cy": 171.64213564213583
+  }
+ },
+ "particles": {
+  "Smoke1": {
+   "index": 1,
+   "name": "Smoke1",
+   "file": "sprites/particles/001_Smoke1.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 11,
+   "cy": 9
+  },
+  "Smoke2": {
+   "index": 2,
+   "name": "Smoke2",
+   "file": "sprites/particles/002_Smoke2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 5,
+   "cy": 4
+  },
+  "Smoke3": {
+   "index": 3,
+   "name": "Smoke3",
+   "file": "sprites/particles/003_Smoke3.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 2,
+   "cy": 1
+  },
+  "coin1": {
+   "index": 4,
+   "name": "coin1",
+   "file": "sprites/particles/004_coin1.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 0,
+   "cy": 0
+  },
+  "coin2": {
+   "index": 5,
+   "name": "coin2",
+   "file": "sprites/particles/005_coin2.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 0,
+   "cy": 0
+  },
+  "coin3": {
+   "index": 6,
+   "name": "coin3",
+   "file": "sprites/particles/006_coin3.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 0,
+   "cy": 0
+  },
+  "coin4": {
+   "index": 7,
+   "name": "coin4",
+   "file": "sprites/particles/007_coin4.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 0,
+   "cy": 0
+  },
+  "BIG": {
+   "index": 8,
+   "name": "BIG",
+   "file": "sprites/particles/008_BIG.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 17.87500000000003,
+   "cy": 17.875
+  },
+  "Score 100": {
+   "index": 9,
+   "name": "Score 100",
+   "file": "sprites/particles/009_Score_100.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 8.708807586973307,
+   "cy": 6.5522494880590045
+  }
+ },
+ "pause": {
+  "costume1": {
+   "index": 1,
+   "name": "costume1",
+   "file": "ui/pause/001_costume1.png",
+   "kind": "png",
+   "res": 2,
+   "cx": 0,
+   "cy": 0
+  },
+  "quit": {
+   "index": 2,
+   "name": "quit",
+   "file": "ui/pause/002_quit.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 77.06017348440972,
+   "cy": 64.64492331192156
+  },
+  "resome": {
+   "index": 3,
+   "name": "resome",
+   "file": "ui/pause/003_resome.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 77.06017499999999,
+   "cy": 64.64491500000001
+  },
+  "setting": {
+   "index": 4,
+   "name": "setting",
+   "file": "ui/pause/004_setting.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 77.06017499999999,
+   "cy": 64.644925
+  }
+ },
+ "mainmenu": {
+  "costume1": {
+   "index": 1,
+   "name": "costume1",
+   "file": "ui/mainmenu/001_costume1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 163.86606999999998,
+   "cy": 77.597635
+  },
+  "quit": {
+   "index": 2,
+   "name": "quit",
+   "file": "ui/mainmenu/002_quit.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 77.06017499999999,
+   "cy": 64.64490500000001
+  },
+  "resome": {
+   "index": 3,
+   "name": "resome",
+   "file": "ui/mainmenu/003_resome.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 77.06017499999999,
+   "cy": 64.64491500000007
+  },
+  "setting": {
+   "index": 4,
+   "name": "setting",
+   "file": "ui/mainmenu/004_setting.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 77.06017499999999,
+   "cy": 64.64491500000007
+  }
+ },
+ "dialog": {
+  "costume2": {
+   "index": 1,
+   "name": "costume2",
+   "file": "ui/dialog/001_costume2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 345.9753050000001,
+   "cy": 245.4606917318656
+  },
+  "costume5": {
+   "index": 2,
+   "name": "costume5",
+   "file": "ui/dialog/002_costume5.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 345.9753100000002,
+   "cy": 194.50000173689352
+  },
+  "costume10": {
+   "index": 3,
+   "name": "costume10",
+   "file": "ui/dialog/003_costume10.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 345.97531000000026,
+   "cy": 194.50000173689352
+  },
+  "costume8": {
+   "index": 4,
+   "name": "costume8",
+   "file": "ui/dialog/004_costume8.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 345.97531000000026,
+   "cy": 194.50000173689352
+  },
+  "costume7": {
+   "index": 5,
+   "name": "costume7",
+   "file": "ui/dialog/005_costume7.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 345.97531,
+   "cy": 194.5
+  },
+  "costume1": {
+   "index": 6,
+   "name": "costume1",
+   "file": "ui/dialog/006_costume1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": -46.48405000663183,
+   "cy": 3.7599600000000066
+  },
+  "costume3": {
+   "index": 7,
+   "name": "costume3",
+   "file": "ui/dialog/007_costume3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": -70.92630385349281,
+   "cy": 3.759962316017379
+  },
+  "costume4": {
+   "index": 8,
+   "name": "costume4",
+   "file": "ui/dialog/008_costume4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": -48.91714500663181,
+   "cy": 1.3268700000000138
+  },
+  "costume6": {
+   "index": 9,
+   "name": "costume6",
+   "file": "ui/dialog/009_costume6.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 0,
+   "cy": 0
+  }
+ },
+ "settings": {
+  "Settings_1": {
+   "index": 1,
+   "name": "Settings_1",
+   "file": "ui/settings/001_Settings_1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Settings_2": {
+   "index": 2,
+   "name": "Settings_2",
+   "file": "ui/settings/002_Settings_2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Settings_3": {
+   "index": 3,
+   "name": "Settings_3",
+   "file": "ui/settings/003_Settings_3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Settings_4": {
+   "index": 4,
+   "name": "Settings_4",
+   "file": "ui/settings/004_Settings_4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Advanced_1": {
+   "index": 5,
+   "name": "Advanced_1",
+   "file": "ui/settings/005_Advanced_1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Advanced_2": {
+   "index": 6,
+   "name": "Advanced_2",
+   "file": "ui/settings/006_Advanced_2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Settings_5": {
+   "index": 7,
+   "name": "Settings_5",
+   "file": "ui/settings/007_Settings_5.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "editor_1": {
+   "index": 8,
+   "name": "editor_1",
+   "file": "ui/settings/008_editor_1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "graft_4": {
+   "index": 9,
+   "name": "graft_4",
+   "file": "ui/settings/009_graft_4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "graft_2": {
+   "index": 10,
+   "name": "graft_2",
+   "file": "ui/settings/010_graft_2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "graft_1": {
+   "index": 11,
+   "name": "graft_1",
+   "file": "ui/settings/011_graft_1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "graft_3": {
+   "index": 12,
+   "name": "graft_3",
+   "file": "ui/settings/012_graft_3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Advanced_3": {
+   "index": 13,
+   "name": "Advanced_3",
+   "file": "ui/settings/013_Advanced_3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "Advanced_4": {
+   "index": 14,
+   "name": "Advanced_4",
+   "file": "ui/settings/014_Advanced_4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  },
+  "sound_1": {
+   "index": 15,
+   "name": "sound_1",
+   "file": "ui/settings/015_sound_1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 252,
+   "cy": 179
+  }
+ },
+ "transition": {
+  "costume1": {
+   "index": 1,
+   "name": "costume1",
+   "file": "ui/transition/001_costume1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 563.8875824106043,
+   "cy": 377.6276250000001
+  },
+  "costume2": {
+   "index": 2,
+   "name": "costume2",
+   "file": "ui/transition/002_costume2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 552.6166562053022,
+   "cy": 237.987985
+  },
+  "costume4": {
+   "index": 3,
+   "name": "costume4",
+   "file": "ui/transition/003_costume4.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 94.82749453389965,
+   "cy": 126.99451177918452
+  },
+  "costume3": {
+   "index": 4,
+   "name": "costume3",
+   "file": "ui/transition/004_costume3.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 146.89830498673646,
+   "cy": 57.945862207571636
+  }
+ },
+ "overlay": {
+  "costume1": {
+   "index": 1,
+   "name": "costume1",
+   "file": "ui/overlay/001_costume1.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 251.25,
+   "cy": 191.75
+  },
+  "costume2": {
+   "index": 2,
+   "name": "costume2",
+   "file": "ui/overlay/002_costume2.svg",
+   "kind": "svg",
+   "res": 1,
+   "cx": 358.7431472907313,
+   "cy": 198.56775849849853
+  }
+ }
+}
