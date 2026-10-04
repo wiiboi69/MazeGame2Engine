@@ -7,6 +7,7 @@ public sealed class Particle
 {
     public ParticleKind Kind;
     public double X, Y;
+    public double PrevX = double.NaN, PrevY = double.NaN;
     public double Frame = 1;
     public double SpeedY;
     public double Ghost;       // 0..100 transparency effect, like Scratch's ghost effect

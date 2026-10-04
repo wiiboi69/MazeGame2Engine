@@ -54,6 +54,8 @@ public sealed class Game : IDisposable
         };
         _input = new GameInput(_settings);
         _levels = LevelLibrary.LoadDirectory(levelsDir);
+        AppWindow.SetAspect(_settings.AspectRatio);
+        _win.SetFpsLimit(_settings.FpsLimit);
     }
 
     // ================================================================ main loop
@@ -92,9 +94,12 @@ public sealed class Game : IDisposable
                 while (_acc >= Step && _state == GameState.Playing && _world != null)
                 {
                     _acc -= Step;
+                    _world.SavePrevious();
                     _world.Tick(_input.Poll());
                     HandlePending();
                 }
+                // how far we are between the last logic tick and the next, used to smooth drawing
+                if (_world != null) _world.Alpha = Math.Clamp(_acc / Step, 0, 1);
                 break;
 
             case GameState.Wipe:
@@ -114,6 +119,7 @@ public sealed class Game : IDisposable
         _world.SoundRequested += n => _audio.PlaySfx(n);
         _world.DialogRequested += OpenDialog;
         _audio.PlayMusic("my_song_68");
+        _world.SavePrevious();
         _acc = 0;
         _input.Reset();
         _state = GameState.Playing;
@@ -152,6 +158,7 @@ public sealed class Game : IDisposable
             req = new LoadRequest(_world.LevelNumber, LoadKind.Respawn, false);
         }
         _world.Load(level, req.Level, req.Kind, req.EntrySide);
+        _world.SavePrevious();   // no smoothing across a level change
         _input.Reset();
     }
 
@@ -224,25 +231,25 @@ public sealed class Game : IDisposable
         }
         else
         {
-            _ui.Text("MAZE GAME 2", 480, 190, 72, SKColors.White, true, 1, true);
+            _ui.Text("MAZE GAME 2", SkiaUi.CX, 190, 72, SKColors.White, true, 1, true);
         }
-        _ui.Text("C# port: raylib + SkiaSharp + OpenAL", 480, 250, 18, new SKColor(255, 255, 255, 200), false, 1, true);
+        _ui.Text("C# port: raylib + SkiaSharp + OpenAL", SkiaUi.CX, 250, 18, new SKColor(255, 255, 255, 200), false, 1, true);
 
-        int hit = _titleMenu.Run(_ui, mouse, new[] { "Play", "Settings", "Quit" }, 330, 330, 300);
+        int hit = _titleMenu.Run(_ui, mouse, new[] { "Play", "Settings", "Quit" }, SkiaUi.CX - 150, 330, 300);
         if (hit >= 0) _audio.PlaySfx("click");
         if (hit == 0) StartGame();
         else if (hit == 1) { _settingsReturn = GameState.Title; _state = GameState.Settings; }
         else if (hit == 2) _quit = true;
-        _ui.Text("Arrows / WASD: move   E / Enter: use   F11: fullscreen", 480, 690, 16, new SKColor(255, 255, 255, 190), false, 1, true);
+        _ui.Text("Arrows / WASD: move   E / Enter: use   F11: fullscreen", SkiaUi.CX, 690, 16, new SKColor(255, 255, 255, 190), false, 1, true);
     }
 
     private void DrawEnd(float dt, Vector2 mouse)
     {
         DrawBackdropOnly(dt, 40);
-        _ui.Rect(180, 170, 600, 330, new SKColor(10, 10, 40, 220), 18, new SKColor(255, 255, 255, 120));
-        _ui.Text("You finished the last level!", 480, 270, 40, SKColors.White, true, 1, true);
-        _ui.Text("Thanks for playing.", 480, 320, 24, new SKColor(255, 255, 255, 220), false, 1);
-        int hit = _endMenu.Run(_ui, mouse, new[] { "Back to title" }, 330, 380, 300);
+        _ui.Rect(SkiaUi.CX - 300, 170, 600, 330, new SKColor(10, 10, 40, 220), 18, new SKColor(255, 255, 255, 120));
+        _ui.Text("You finished the last level!", SkiaUi.CX, 270, 40, SKColors.White, true, 1, true);
+        _ui.Text("Thanks for playing.", SkiaUi.CX, 320, 24, new SKColor(255, 255, 255, 220), false, 1);
+        int hit = _endMenu.Run(_ui, mouse, new[] { "Back to title" }, SkiaUi.CX - 150, 380, 300);
         if (hit == 0) ToTitle();
     }
 
@@ -255,13 +262,13 @@ public sealed class Game : IDisposable
         _ui.Rect(12, 12, 230, 44, new SKColor(0, 0, 0, 120), 10);
         _ui.Text($"Gems {_world.Coins}", 26, 43, 26, new SKColor(255, 230, 90), true, 0, true);
         _ui.Text($"Level {_world.LevelNumber - 1}", 228, 43, 20, SKColors.White, false, 2, true);
-        if (_world.GodMode) _ui.Text("FLY MODE (F1)", 480, 700, 18, new SKColor(255, 120, 120), true, 1, true);
+        if (_world.GodMode) _ui.Text("FLY MODE (F1)", SkiaUi.CX, 700, 18, new SKColor(255, 120, 120), true, 1, true);
 
         if (_state == GameState.Paused)
         {
-            _ui.Rect(0, 0, 960, 720, new SKColor(0, 0, 0, 150));
-            _ui.Text("Paused", 480, 200, 56, SKColors.White, true, 1, true);
-            int hit = _pauseMenu.Run(_ui, mouse, new[] { "Resume", "Settings", "Quit to title" }, 330, 260, 300);
+            _ui.Rect(0, 0, SkiaUi.W, 720, new SKColor(0, 0, 0, 150));
+            _ui.Text("Paused", SkiaUi.CX, 200, 56, SKColors.White, true, 1, true);
+            int hit = _pauseMenu.Run(_ui, mouse, new[] { "Resume", "Settings", "Quit to title" }, SkiaUi.CX - 150, 260, 300);
             if (Raylib.IsKeyPressed(KeyboardKey.Escape) || Raylib.IsKeyPressed(KeyboardKey.P)) hit = 0;
             if (hit >= 0) _audio.PlaySfx("click");
             if (hit == 0) { _state = GameState.Playing; _audio.PauseMusic(false); _acc = 0; _input.Reset(); }
@@ -270,9 +277,9 @@ public sealed class Game : IDisposable
         }
         else if (_state == GameState.Dialog)
         {
-            _ui.Rect(120, 470, 720, 190, new SKColor(10, 10, 40, 235), 16, new SKColor(255, 255, 255, 160), 3);
+            _ui.Rect(SkiaUi.CX - 360, 470, 720, 190, new SKColor(10, 10, 40, 235), 16, new SKColor(255, 255, 255, 160), 3);
             _ui.Text(_dialogText, 160, 540, 32, SKColors.White, false, 0, true);
-            _ui.Text("press E / Enter", 800, 640, 16, new SKColor(255, 255, 255, 170), false, 2);
+            _ui.Text("press E / Enter", SkiaUi.CX + 320, 640, 16, new SKColor(255, 255, 255, 170), false, 2);
             if (Raylib.IsKeyPressed(KeyboardKey.E) || Raylib.IsKeyPressed(KeyboardKey.Enter) ||
                 Raylib.IsKeyPressed(KeyboardKey.Escape) || Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
@@ -285,7 +292,7 @@ public sealed class Game : IDisposable
         {
             float t = Math.Clamp(_wipeT, 0f, 1f);
             float cover = _wipeCovering ? t : 1f - t;      // 0 = clear, 1 = fully covered
-            _ui.Rect(0, 0, 960, 720 * cover, new SKColor(0, 0, 0, 255));
+            _ui.Rect(0, 0, SkiaUi.W, 720 * cover, new SKColor(0, 0, 0, 255));
         }
     }
 
@@ -295,8 +302,8 @@ public sealed class Game : IDisposable
     {
         if (_world != null && _settingsReturn == GameState.Paused) _scene.DrawWorld(_world);
         else DrawBackdropOnly(dt, 30);
-        _ui.Rect(0, 0, 960, 720, new SKColor(0, 0, 0, 170));
-        _ui.Text("Settings", 480, 80, 52, SKColors.White, true, 1, true);
+        _ui.Rect(0, 0, SkiaUi.W, 720, new SKColor(0, 0, 0, 170));
+        _ui.Text("Settings", SkiaUi.CX, 80, 52, SKColors.White, true, 1, true);
 
         var labels = new List<string>
         {
@@ -304,6 +311,8 @@ public sealed class Game : IDisposable
             $"Sound volume: {(int)Math.Round(_settings.SfxVolume * 100)}%",
             $"Fullscreen: {(_settings.Fullscreen ? "on" : "off")}",
             $"Show fps: {(_settings.ShowStats ? "on" : "off")}",
+            $"Aspect ratio: {_settings.AspectRatio}  (experimental)",
+            $"Max FPS: {(_settings.FpsLimit <= 0 ? "Unlimited" : _settings.FpsLimit.ToString())}",
         };
         foreach (var a in BindActions)
         {
@@ -323,7 +332,7 @@ public sealed class Game : IDisposable
             }
         }
 
-        int sel = _settingsMenu.Run(_ui, mouse, labels.ToArray(), 280, 120, 400, 46, 10);
+        int sel = RunScrollableSettings(labels.ToArray(), mouse);
         int cur = _settingsMenu.Selected;
 
         // left / right adjusts sliders
@@ -340,7 +349,9 @@ public sealed class Game : IDisposable
             else if (sel == 1) { _settings.SfxVolume = (_settings.SfxVolume + 0.1f) > 1.01f ? 0 : _settings.SfxVolume + 0.1f; _audio.SfxVolume = _settings.SfxVolume; }
             else if (sel == 2) { _win.ToggleFullscreen(); _settings.Fullscreen = Raylib.IsWindowFullscreen(); }
             else if (sel == 3) _settings.ShowStats = !_settings.ShowStats;
-            else if (sel >= 4 && sel < 4 + BindActions.Length) _rebinding = BindActions[sel - 4];
+            else if (sel == 4) CycleAspect();
+            else if (sel == 5) CycleFps();
+            else if (sel >= 6 && sel < 6 + BindActions.Length) _rebinding = BindActions[sel - 6];
             else
             {
                 _settings.Save(_settingsPath);
@@ -348,7 +359,63 @@ public sealed class Game : IDisposable
                 _settingsMenu.Selected = 0;
             }
         }
-        _ui.Text("Left/Right changes volume. Click a key row, then press the new key.", 480, 690, 16, new SKColor(255, 255, 255, 190), false, 1, true);
+        _ui.Text("Left/Right changes volume. Click a key row, then press the new key.", SkiaUi.CX, 690, 16, new SKColor(255, 255, 255, 190), false, 1, true);
+    }
+
+    // Scroll state for the settings list (visible rows, top offset in pixels).
+    private float _settingsScroll;
+    private const float RowH = 46, RowGap = 10, ListTop = 120, ListBottom = 660;
+
+    /// <summary>Settings list in a clipped viewport that scrolls with the mouse wheel, scrollbar and arrow keys.</summary>
+    private int RunScrollableSettings(string[] items, Vector2 mouse)
+    {
+        float x = SkiaUi.CX - 200, w = 400;
+        float viewH = ListBottom - ListTop;
+        float contentH = items.Length * (RowH + RowGap) - RowGap;
+        float maxScroll = Math.Max(0, contentH - viewH);
+
+        // mouse wheel scrolls when the pointer is over the list
+        float wheel = Raylib.GetMouseWheelMove();
+        if (wheel != 0 && mouse.X >= x - 20 && mouse.X <= x + w + 40 && mouse.Y >= ListTop && mouse.Y <= ListBottom)
+            _settingsScroll -= wheel * 40;
+
+        // keep the keyboard-selected row visible
+        int sel0 = _settingsMenu.Selected;
+        float rowTop = sel0 * (RowH + RowGap);
+        if (rowTop < _settingsScroll) _settingsScroll = rowTop;
+        if (rowTop + RowH > _settingsScroll + viewH) _settingsScroll = rowTop + RowH - viewH;
+        _settingsScroll = Math.Clamp(_settingsScroll, 0, maxScroll);
+
+        // clip to the viewport and draw rows shifted by the scroll offset
+        _ui.PushClip(x - 20, ListTop, x + w + 40, ListBottom);
+        // rows are drawn shifted by the scroll, so the screen mouse hit-tests them directly
+        int hit = _settingsMenu.RunAt(_ui, mouse, items, x, ListTop - _settingsScroll, w, RowH, RowGap);
+        _ui.PopClip();
+
+        // scrollbar
+        if (maxScroll > 0)
+        {
+            float barX = x + w + 14, barH = viewH * viewH / contentH;
+            float barY = ListTop + (viewH - barH) * (_settingsScroll / maxScroll);
+            _ui.Rect(barX, ListTop, 6, viewH, new SKColor(255, 255, 255, 40), 3);
+            _ui.Rect(barX, barY, 6, barH, new SKColor(255, 190, 60, 220), 3);
+        }
+        return hit;
+    }
+
+    private void CycleAspect()
+    {
+        _settings.AspectRatio = _settings.AspectRatio == "4:3" ? "16:9" : "4:3";
+        AppWindow.SetAspect(_settings.AspectRatio);
+    }
+
+    private void CycleFps()
+    {
+        var opts = Settings.FpsOptions;
+        int i = Array.IndexOf(opts, _settings.FpsLimit);
+        // advance to the next option; an unknown saved value jumps to the first option
+        _settings.FpsLimit = i < 0 ? opts[0] : opts[(i + 1) % opts.Length];
+        _win.SetFpsLimit(_settings.FpsLimit);
     }
 
     public void Dispose()

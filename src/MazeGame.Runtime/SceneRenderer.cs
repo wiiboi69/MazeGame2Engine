@@ -5,7 +5,7 @@ using Raylib_cs;
 namespace MazeGame.Runtime;
 
 /// <summary>
-/// Draws levels and worlds into the current 960x720 render target. World units: 32 per tile;
+/// Draws levels and worlds into the current virtual render target (960x720 or 1280x720). World units: 32 per tile;
 /// <see cref="Ppu"/> = render pixels per world unit (2 in game, variable zoom in the editor).
 /// Sprites are placed by their rotation centre exactly like in Scratch, then scaled by size%/100.
 /// </summary>
@@ -64,7 +64,14 @@ public sealed class SceneRenderer
         Ppu = 2;
         CenterX = camX; CenterY = camY;
         // fixed stage backdrop: centre of the stage is world (camX, camY)
-        DrawSprite(_sprites.Get("stage", stageKey), camX, camY, 1.0);
+        // tile the stage sprite so the wider 16:9 view never shows bare background at the sides
+        var stage = _sprites.Get("stage", stageKey);
+        if (stage != null)
+        {
+            double sw = stage.SrcW;
+            int reps = (int)Math.Ceiling(AppWindow.VW / (2.0 * sw)) + 1;
+            for (int k = -reps; k <= reps; k++) DrawSprite(stage, camX + k * sw, camY, 1.0);
+        }
 
         var back = _sprites.Get("background", "Background-1-back");
         double backY = camY < 1400 ? 220 - camY / 3.4 : -183.82352941176458;
@@ -127,7 +134,7 @@ public sealed class SceneRenderer
         foreach (var e in w.Entities)
         {
             if (e.Layer != layer || !e.Visible) continue;
-            DrawSprite(EntitySprite(e), e.X, e.Y, e.SizePct / 100.0, e.FlipX,
+            DrawSprite(EntitySprite(e), w.Lerp(e.PrevX, e.X), w.Lerp(e.PrevY, e.Y), e.SizePct / 100.0, e.FlipX,
                 e.AllAround ? e.RotationDegrees : 0, 255, false);
         }
     }
@@ -148,7 +155,7 @@ public sealed class SceneRenderer
         var p = w.Player;
         if (!p.Visible) return;
         var s = _sprites.ByIndex("player", p.CostumeIndex);
-        DrawSprite(s, p.X, p.Y, 2.0, p.FlipX, p.Rotation == RotationStyle.AllAround ? p.RotationDegrees : 0);
+        DrawSprite(s, w.Lerp(p.PrevX, p.X), w.Lerp(p.PrevY, p.Y), 2.0, p.FlipX, p.Rotation == RotationStyle.AllAround ? p.RotationDegrees : 0);
     }
 
     public void DrawParticles(World w)
@@ -156,7 +163,7 @@ public sealed class SceneRenderer
         foreach (var p in w.Particles)
         {
             var s = _sprites.ByIndex("particles", p.Costume);
-            DrawSprite(s, p.X, p.Y, 2.0, false, 0, (int)(255 * (1 - Math.Clamp(p.Ghost, 0, 100) / 100.0)));
+            DrawSprite(s, w.Lerp(p.PrevX, p.X), w.Lerp(p.PrevY, p.Y), 2.0, false, 0, (int)(255 * (1 - Math.Clamp(p.Ghost, 0, 100) / 100.0)));
         }
     }
 
@@ -164,8 +171,9 @@ public sealed class SceneRenderer
     public void DrawWorld(World w)
     {
         Ppu = 2;
-        CenterX = w.CamX; CenterY = w.CamY;
-        DrawBackground(w.Level, w.CamX, w.CamY);
+        double camX = w.Lerp(w.PrevCamX, w.CamX), camY = w.Lerp(w.PrevCamY, w.CamY);
+        CenterX = camX; CenterY = camY;
+        DrawBackground(w.Level, camX, camY);
         DrawEntities(w, EntityLayer.BehindTiles);
         if (w.PlayerBehindTiles) DrawPlayer(w);
         DrawTiles(w.Tiles, w.Level.Width, w.Level.Height, w.GodMode);

@@ -18,6 +18,7 @@ public sealed class Player
     private readonly World _w;
 
     public double X, Y;
+    public double PrevX, PrevY;               // position before the last logic tick (for smooth rendering)
     public double SpeedX, SpeedY;
     public double Width = 8, Height = 18;      // half extents of the hit box
     public int Falling = 99, Jumping = 99;

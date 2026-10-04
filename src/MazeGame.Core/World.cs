@@ -30,6 +30,26 @@ public sealed class World
     public List<Particle> Particles { get; } = new();
 
     public double CamX, CamY;
+    public double PrevCamX, PrevCamY;
+
+    /// <summary>0..1 position between the previous and current logic tick, set by the game loop each frame.</summary>
+    public double Alpha = 1;
+
+    /// <summary>Call immediately before every logic tick (and after loads/teleports) so rendering can interpolate.</summary>
+    public void SavePrevious()
+    {
+        PrevCamX = CamX; PrevCamY = CamY;
+        Player.PrevX = Player.X; Player.PrevY = Player.Y;
+        foreach (var e in Entities) { e.PrevX = e.X; e.PrevY = e.Y; }
+        foreach (var p in Particles) { p.PrevX = p.X; p.PrevY = p.Y; }
+    }
+
+    /// <summary>Interpolated value for rendering. Big jumps (teleports, respawns) are not smoothed.</summary>
+    public double Lerp(double prev, double cur)
+    {
+        if (double.IsNaN(prev) || Math.Abs(cur - prev) > 64) return cur;
+        return prev + (cur - prev) * Alpha;
+    }
     public double CamXControl, CamYControl;
     public int ScreenX, ScreenY;
 

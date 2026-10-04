@@ -29,6 +29,7 @@ public sealed class Entity
     public EntityKind Kind;
     public int TileType;
     public double X, Y;
+    public double PrevX = double.NaN, PrevY = double.NaN;   // NaN = not yet ticked (use current)
     public double Width, Height;          // half extents
     public double Dir = 90;
     public double SpeedX, SpeedY;

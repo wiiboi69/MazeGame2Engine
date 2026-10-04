@@ -64,6 +64,7 @@ public sealed class EditorApp : IDisposable
     public EditorApp(string assetsDir, string levelsDir)
     {
         _win = new AppWindow("Maze Game 2 - Level Editor", false);
+        AppWindow.SetAspect("4:3");   // the editor layout is designed for 4:3 only
         _sprites = new SpriteLibrary(assetsDir);
         _scene = new SceneRenderer(_sprites);
         _ui = new SkiaUi();
