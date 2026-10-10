@@ -20,11 +20,11 @@ public static class AutoTile
         string recipe = Neighbour(level, x, y + 1, group) + Neighbour(level, x + 1, y, group)
                       + Neighbour(level, x, y - 1, group) + Neighbour(level, x - 1, y, group);
 
-        for (int t = 1; t < TileTables.Group.Length; t++)
+        foreach (var t in TileRegistry.All)
         {
-            if (TileInfo.Group(t) == group && TileInfo.Recipes(t).Contains(recipe))
+            if (t.Group == group && t.Recipes.Contains(recipe))
             {
-                level.Set(x, y, t);
+                level.Set(x, y, t.Num);
                 return;
             }
         }

@@ -1,6 +1,7 @@
 namespace MazeGame.Core;
 
-/// <summary>Tile ids and lookups. Ids are the original Scratch costume numbers (1-based).</summary>
+/// <summary>Runtime tile numbers of the built-in tiles (the original Scratch costume numbers) and lookups.
+/// Level files use string ids instead - see <see cref="TileRegistry"/>.</summary>
 public static class TileInfo
 {
     public const int Blank = 1;          // costume "BIG" - invisible helper, treated as air
@@ -23,24 +24,20 @@ public static class TileInfo
     public const int DoorWideTrigger = 79;
     public const int DefaultSolid = 10;  // Block-Wood, the default "wall" tile
 
-    public const int TileCount = 79;
+    // ---- lookups by runtime tile number (data comes from TileRegistry) -----------------------------
 
-    public static string Shape(int t) => t >= 0 && t < TileTables.Shape.Length ? TileTables.Shape[t] : "";
-    public static string Group(int t) => t >= 0 && t < TileTables.Group.Length ? TileTables.Group[t] : "";
-    public static string Recipes(int t) => t >= 0 && t < TileTables.Recipes.Length ? TileTables.Recipes[t] : "";
-    public static string Keymap(int t) => t >= 0 && t < TileTables.Keymap.Length ? TileTables.Keymap[t] : "";
+    public static string Shape(int t) => TileRegistry.ByNum(t)?.Shape ?? "";
+    public static string Group(int t) => TileRegistry.ByNum(t)?.Group ?? "";
+    public static string Recipes(int t) => TileRegistry.ByNum(t)?.Recipes ?? "";
 
     /// <summary>Tiles that are "brushes" for placing entities rather than real tiles.</summary>
-    public static bool IsEntityBrush(int t) =>
-        t == Walker || t == Danger || t == Star || t == EndBox || t == Piranha ||
-        t == DoorTrigger || t == PipeTrigger || t == DoorWideTrigger;
-
-    public static bool IsTrigger(int t) => t == DoorTrigger || t == PipeTrigger || t == DoorWideTrigger;
+    public static bool IsEntityBrush(int t) => TileRegistry.ByNum(t)?.Entity != null;
 
     /// <summary>Tiles that only appear in the editor (markers / logic), never in game.</summary>
-    public static bool IsEditorOnly(int t) => t == PlayerSpawn || t == LogicAuto || t == LogicDeath || t == Blank;
+    public static bool IsEditorOnly(int t) => TileRegistry.ByNum(t)?.EditorOnly ?? false;
 
-    public static bool IsGem(int t) => t > Ladder && t < PlayerSpawn;
-
-    public static int GemValue(int t) => t switch { Gem1 => 1, Gem2 => 2, Gem3 => 5, Gem4 => 10, _ => 0 };
+    public static bool IsGem(int t) => (TileRegistry.ByNum(t)?.GemValue ?? 0) > 0;
+    public static int GemValue(int t) => TileRegistry.ByNum(t)?.GemValue ?? 0;
+    public static bool IsDeadly(int t) => TileRegistry.ByNum(t)?.Deadly ?? false;
+    public static bool CatchesDeath(int t) => TileRegistry.ByNum(t)?.CatchesDeath ?? false;
 }

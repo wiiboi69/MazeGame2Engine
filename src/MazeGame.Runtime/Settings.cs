@@ -6,18 +6,19 @@ namespace MazeGame.Runtime;
 /// <summary>User settings saved next to the executable (settings.json).</summary>
 public sealed class Settings
 {
+    public float MasterVolume { get; set; } = 1f;
+    public bool Mute { get; set; }
     public float MusicVolume { get; set; } = 0.5f;
     public float SfxVolume { get; set; } = 0.8f;
     public bool Fullscreen { get; set; }
     public bool ShowStats { get; set; }
-
-    /// <summary>"4:3" (960x720) or "16:9" (1280x720, experimental).</summary>
-    public string AspectRatio { get; set; } = "4:3";
-
-    /// <summary>Render frame cap. 0 = unlimited. Game logic is fixed at 30 ticks/s regardless.</summary>
+    /// <summary>false = 4:3 (960x720), true = 16:9 (1280x720).</summary>
+    public bool Widescreen { get; set; }
+    /// <summary>Window size as a fraction of the full virtual size: 1, 2 or 3 (thirds).</summary>
+    public int WindowScale { get; set; } = 3;
+    public bool VSync { get; set; } = true;
     public int FpsLimit { get; set; } = 60;
-
-    public static readonly int[] FpsOptions = { 30, 60, 90, 120, 165, 180, 240, 0 };
+    public int LastSlot { get; set; }
 
     /// <summary>action name -> keyboard keys (as ints of Raylib_cs.KeyboardKey).</summary>
     public Dictionary<string, int[]> Keys { get; set; } = DefaultKeys();
@@ -29,8 +30,11 @@ public sealed class Settings
         ["up"] = new[] { (int)KeyboardKey.Up, (int)KeyboardKey.W },
         ["down"] = new[] { (int)KeyboardKey.Down, (int)KeyboardKey.S },
         ["use"] = new[] { (int)KeyboardKey.E, (int)KeyboardKey.Enter },
+        ["pause"] = new[] { (int)KeyboardKey.Escape, (int)KeyboardKey.P },
         ["z"] = new[] { (int)KeyboardKey.Z },
         ["x"] = new[] { (int)KeyboardKey.X },
+        ["savestate"] = new[] { (int)KeyboardKey.F6 },
+        ["loadstate"] = new[] { (int)KeyboardKey.F7 },
     };
 
     public static Settings Load(string path)

@@ -19,7 +19,10 @@
     <Content Include="..\..\assets\**\*.*" Link="assets\%(RecursiveDir)%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\levels\**\*.mgl" Link="levels\%(RecursiveDir)%(Filename)%(Extension)">
+    <Content Include="..\..\levels\**\*.json" Link="levels\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\worlds\**\*.json" Link="worlds\%(RecursiveDir)%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

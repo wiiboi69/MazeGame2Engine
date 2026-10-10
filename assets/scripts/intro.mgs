@@ -1,0 +1,19 @@
+// Example level script. Attach it with the level property "Script" = intro.
+var needed = 3;
+
+func welcome() {
+    if (!flag("intro_seen")) {
+        say("Welcome! Collect " + needed + " gems.");
+        set_flag("intro_seen", true);
+    }
+}
+
+on start { welcome(); }
+
+on gem {
+    if (gems() == needed) {
+        say("That's enough gems!");
+    }
+}
+
+on death { print("player died in " + level_id()); }

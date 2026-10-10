@@ -1,0 +1,9 @@
+// Player script example: set it as "Player script" in the level props.
+on death {
+  camera_shake(8, 0.5)
+}
+
+on tick {
+  // hold Down to zoom out a little
+  if (key_down("down")) { camera_zoom(0.8) } else { camera_zoom(1) }
+}

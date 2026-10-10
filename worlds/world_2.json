@@ -1,0 +1,65 @@
+{
+ "id": "world_2",
+ "name": "The Ruins",
+ "start": "r1",
+ "layers": [
+  {
+   "image": "custom/hills.png",
+   "x": 640,
+   "y": 420,
+   "scale": 5,
+   "parallax": 0.3
+  }
+ ],
+ "nodes": [
+  {
+   "id": "r0",
+   "name": "Back to the hills",
+   "portal": "world_1",
+   "portalNode": "portal",
+   "x": 160,
+   "y": 400,
+   "links": [
+    "r1"
+   ]
+  },
+  {
+   "id": "r1",
+   "name": "Secret room",
+   "level": "level_056",
+   "x": 520,
+   "y": 330,
+   "links": [
+    "r0"
+   ]
+  }
+ ],
+ "mode": "free",
+ "width": 40,
+ "height": 23,
+ "tiles": [
+  "mountain*40",
+  "sand mountain sand*5 flowers mountain sand*2 grass sand grass*2 sand grass lava*2 grass lava sand*2 grass mountain pine_forest sand mountain grass*3 sand hills sand mountain*2 lava sand lava*2",
+  "lava mountain grass*2 lava sand mountain sand grass*2 lava pine_forest grass sand lava flowers mountain hills grass sand grass sand grass*2 sand*2 mountain*2 sand*4 mountain sand pine_forest sand*2 lava grass lava",
+  "lava grass flowers lava grass mountain lava*3 grass*2 sand*2 grass sand mountain grass mountain lava*2 sand*3 lava grass pine_forest sand lava grass sand grass lava grass sand grass*4 sand lava",
+  "grass lava mountain grass sand lava sand lava grass mountain lava mountain sand*2 lava mountain grass flowers sand*2 lava pine_forest mountain grass*2 mountain*2 grass mountain grass*2 lava mountain grass flowers lava grass sand grass sand",
+  "sand mountain sand grass flowers lava sand*2 grass sand*2 lava mountain grass mountain*2 pine_forest grass mountain sand*2 grass*2 sand grass*3 sand grass mountain sand grass mountain*2 sand mountain grass lava mountain lava",
+  "lava mountain lava grass*2 pine_forest grass mountain grass sand mountain sand*2 mountain lava*2 grass mountain grass*3 sand lava sand*3 grass mountain pine_forest sand mountain hills grass*5 pine_forest grass sand",
+  "hills grass sand*2 flowers*2 grass sand grass lava grass hills grass*2 lava*3 grass sand grass sand mountain lava*2 sand mountain lava sand grass sand lava grass lava grass sand grass sand lava grass lava",
+  "sand*2 hills sand*2 grass sand grass*2 hills mountain grass*2 sand grass sand*2 lava grass lava mountain*2 pine_forest mountain grass*2 sand*2 mountain sand grass sand grass sand lava*2 sand lava*2 sand",
+  "grass*2 mountain*2 grass sand grass*2 sand mountain grass sand*3 grass sand*3 mountain lava sand mountain sand lava sand grass mountain lava sand lava sand*2 grass*2 sand grass sand grass hills sand",
+  "grass sand lava grass*4 sand*2 mountain lava*2 sand*2 path*2 cave sand mountain sand lava mountain sand*3 mountain sand*2 mountain lava grass mountain sand*3 mountain*2 sand mountain grass",
+  "grass mountain sand*2 grass sand*2 mountain path*6 grass sand*3 mountain grass sand grass lava*2 grass sand lava grass mountain grass sand grass sand grass*2 mountain flowers sand*2 lava",
+  "mountain sand grass lava sand castle path*2 sand*5 lava pine_forest sand hills pine_forest sand grass*2 lava sand pine_forest sand grass mountain lava grass sand pine_forest lava*2 grass lava*2 sand lava sand grass",
+  "lava grass lava mountain sand*2 grass lava grass lava sand lava*2 sand*2 grass sand flowers lava grass mountain grass mountain lava sand lava sand grass*2 mountain sand lava flowers sand grass sand lava mountain grass sand",
+  "sand grass sand grass sand*2 lava flowers grass sand*2 mountain sand lava sand grass sand*5 grass lava sand*2 lava grass pine_forest grass mountain grass lava sand mountain sand lava*2 sand grass lava",
+  "grass sand*2 flowers hills lava*2 mountain*3 sand mountain lava grass sand lava*3 sand*2 grass sand lava mountain sand grass mountain pine_forest grass sand*2 lava sand mountain sand*2 mountain sand mountain lava",
+  "grass sand*2 grass*2 sand lava mountain sand*2 mountain sand grass sand*3 pine_forest sand*2 grass sand grass sand*4 grass flowers*2 sand grass mountain pine_forest lava sand mountain lava sand grass lava",
+  "sand*2 lava grass*2 sand lava grass lava mountain pine_forest grass sand*2 grass mountain grass mountain sand grass mountain grass*2 sand grass*2 mountain grass lava sand grass lava mountain sand*2 grass*3 mountain*2",
+  "sand mountain*2 sand grass*2 sand*3 mountain hills lava mountain*3 grass lava grass mountain lava grass sand*2 mountain grass sand*3 grass pine_forest flowers lava grass sand lava grass lava sand*3",
+  "flowers grass sand mountain sand*2 mountain lava sand pine_forest grass*2 lava sand*2 grass sand*3 grass mountain sand*4 grass mountain*2 lava grass lava grass mountain lava*2 grass lava grass lava*2",
+  "grass mountain grass lava grass lava sand mountain sand*3 mountain sand*3 grass*3 sand*2 mountain grass sand mountain*2 sand mountain sand grass*2 mountain grass mountain lava*2 sand grass mountain grass mountain",
+  "mountain hills mountain lava grass mountain sand lava grass sand mountain lava sand*3 flowers sand grass sand mountain sand flowers grass hills flowers mountain sand*2 flowers grass sand mountain lava*2 sand mountain grass lava*2 mountain",
+  "mountain*40"
+ ]
+}

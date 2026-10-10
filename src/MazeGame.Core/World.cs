@@ -11,7 +11,7 @@ public enum LoadKind
 }
 
 /// <summary>Something the host (game / editor) must do between ticks: swap the level, usually with a wipe.</summary>
-public readonly record struct LoadRequest(int Level, LoadKind Kind, bool Wipe, int EntrySide = 0, bool Win = false);
+public readonly record struct LoadRequest(string Level, LoadKind Kind, bool Wipe, int EntrySide = 0, bool Win = false);
 
 /// <summary>
 /// One running level: tiles, player, entities, particles and camera. Call <see cref="Tick"/> 30 times a second
@@ -21,7 +21,7 @@ public readonly record struct LoadRequest(int Level, LoadKind Kind, bool Wipe, i
 public sealed class World
 {
     public LevelData Level { get; private set; }
-    public int LevelNumber { get; private set; }
+    public string LevelId { get; private set; } = "";
     /// <summary>Live tile grid (column-major, copy of the level so picked-up gems can be removed).</summary>
     public int[] Tiles { get; private set; } = Array.Empty<int>();
 
@@ -30,26 +30,6 @@ public sealed class World
     public List<Particle> Particles { get; } = new();
 
     public double CamX, CamY;
-    public double PrevCamX, PrevCamY;
-
-    /// <summary>0..1 position between the previous and current logic tick, set by the game loop each frame.</summary>
-    public double Alpha = 1;
-
-    /// <summary>Call immediately before every logic tick (and after loads/teleports) so rendering can interpolate.</summary>
-    public void SavePrevious()
-    {
-        PrevCamX = CamX; PrevCamY = CamY;
-        Player.PrevX = Player.X; Player.PrevY = Player.Y;
-        foreach (var e in Entities) { e.PrevX = e.X; e.PrevY = e.Y; }
-        foreach (var p in Particles) { p.PrevX = p.X; p.PrevY = p.Y; }
-    }
-
-    /// <summary>Interpolated value for rendering. Big jumps (teleports, respawns) are not smoothed.</summary>
-    public double Lerp(double prev, double cur)
-    {
-        if (double.IsNaN(prev) || Math.Abs(cur - prev) > 64) return cur;
-        return prev + (cur - prev) * Alpha;
-    }
     public double CamXControl, CamYControl;
     public int ScreenX, ScreenY;
 
@@ -63,21 +43,119 @@ public sealed class World
     public long TickCount { get; private set; }
     public InputState Input;
 
-    public Func<int, LevelData?>? LevelSource;
+    public Func<string, LevelData?>? LevelSource;
 
     public event Action<string>? SoundRequested;
     public event Action<string>? DialogRequested;
 
+    /// <summary>Script flags (saved with the save slot). Shared with the game, which binds this to the slot.</summary>
+    public Dictionary<string, string> Flags = new();
+    /// <summary>The running script of the current level, if any.</summary>
+    public Scripting.ScriptHost? Host { get; private set; }
+    /// <summary>The player's own script runtime (level property PlayerScript, else the game-wide default).</summary>
+    public Scripting.ScriptHost? PlayerHost { get; private set; }
+    /// <summary>Game-wide fallback player script id (game.json "playerScript").</summary>
+    public static string DefaultPlayerScript = "";
+
+    // ---- level state saving (see CaptureState)
+    /// <summary>Saved states by level id. The game shares one dictionary and clears it when the overworld opens.</summary>
+    public Dictionary<string, WorldSnapshot> States = new();
+    private string _stateCmd = "";
+    public event Action<string>? Notice;
+    public void RequestSaveState() => _stateCmd = "save";
+    public void RequestLoadState() => _stateCmd = "load";
+    public bool PlayerFrozen;
+
+    // ---- script-controlled camera
+    public bool CamLocked;
+    public double CamLockX, CamLockY;
+    public double CamZoom = 1;
+    public double ShakeX, ShakeY;
+    private double _panFromX, _panFromY, _panToX, _panToY, _shakeAmt;
+    private int _panTick, _panTotal, _shakeTicks;
+    private static readonly Random CamRng = new();
+
+    public void CameraLock(double px, double py) { _panTotal = 0; CamLocked = true; CamLockX = px; CamLockY = py; CamX = px; CamY = py; }
+    public void CameraFollow() { _panTotal = 0; CamLocked = false; }
+    public void CameraPan(double px, double py, double seconds)
+    {
+        int ticks = (int)Math.Round(seconds * GameConstants.TicksPerSecond);
+        if (ticks <= 0) { CameraLock(px, py); return; }
+        _panFromX = CamX; _panFromY = CamY; _panToX = px; _panToY = py; _panTick = 0; _panTotal = ticks; CamLocked = false;
+    }
+    public void CameraShake(double amount, double seconds) { _shakeAmt = amount; _shakeTicks = (int)Math.Round(seconds * GameConstants.TicksPerSecond); }
+
+    private void ApplyScriptCamera()
+    {
+        if (_panTotal > 0)
+        {
+            _panTick++;
+            double t = Math.Min(1.0, (double)_panTick / _panTotal);
+            t = t * t * (3 - 2 * t);
+            CamX = _panFromX + (_panToX - _panFromX) * t;
+            CamY = _panFromY + (_panToY - _panFromY) * t;
+            if (_panTick >= _panTotal) { _panTotal = 0; CamLocked = true; CamLockX = _panToX; CamLockY = _panToY; }
+        }
+        else if (CamLocked) { CamX = CamLockX; CamY = CamLockY; }
+        if (_shakeTicks > 0)
+        {
+            _shakeTicks--;
+            ShakeX = (CamRng.NextDouble() * 2 - 1) * _shakeAmt;
+            ShakeY = (CamRng.NextDouble() * 2 - 1) * _shakeAmt;
+        }
+        else ShakeX = ShakeY = 0;
+    }
+
+    /// <summary>Finds an entity by the "id" given to it in the editor.</summary>
+    public Entity? FindEntity(string id)
+    {
+        foreach (var e in Entities) if (!e.Removed && e.Id == id) return e;
+        return null;
+    }
+
+    internal void AttachScript(Entity e, bool fresh)
+    {
+        var chunk = Scripting.ScriptLibrary.Get(e.Def?.Get("script"));
+        if (chunk == null) return;
+        e.Script = new Scripting.ScriptHost(this, chunk, e, false, fresh);
+        if (fresh) { e.Script.Fire("start"); e.Script.Flush(); }
+    }
+    /// <summary>Directory-less hook: lets the game provide scripts instead of <see cref="Scripting.ScriptLibrary"/>.</summary>
+    public void DialogClosed() => Host?.DialogClosed();
+    public void FireEvent(string ev, string? target = null) => Host?.Fire(ev, target);
+
+    public Entity? SpawnEntity(string type, int cx, int cy, Dictionary<string, string>? props = null)
+    {
+        var def = new EntityDef { X = cx, Y = cy, Type = type };
+        if (props != null) def.Props = props;
+        var e = Entity.Spawn(def, Level.Height, false);
+        if (e != null) { Entities.Add(e); AttachScript(e, true); }
+        return e;
+    }
+
+    public void RemoveEntitiesAt(int cx, int cy)
+    {
+        foreach (var e in Entities)
+            if ((int)Math.Floor(e.X / 32) == cx && (int)Math.Floor(e.Y / 32) == cy) e.Removed = true;
+    }
+
+    public void GotoLevel(string id)
+    {
+        if (Mode == WorldMode.Playing && HasLevel(id))
+        { Mode = WorldMode.Frozen; Pending = new LoadRequest(id, LoadKind.Respawn, true); }
+    }
+
     private bool _deathQueued;
     private bool _deathStarted;
-    private int _pipeTarget, _pipePhase, _pipeTimer;
+    private string _pipeTarget = "";
+    private int _pipePhase, _pipeTimer;
 
-    public World(LevelData level, int levelNumber, Func<int, LevelData?>? source = null)
+    public World(LevelData level, string levelId, Func<string, LevelData?>? source = null)
     {
         LevelSource = source;
         Player = new Player(this);
         Level = level;
-        Load(level, levelNumber, LoadKind.Respawn, 0);
+        Load(level, levelId, LoadKind.Respawn, 0);
     }
 
     public int Width => Level.Width;
@@ -85,10 +163,10 @@ public sealed class World
 
     // ================================================================ loading
 
-    public void Load(LevelData data, int number, LoadKind kind, int entrySide)
+    public void Load(LevelData data, string id, LoadKind kind, int entrySide)
     {
         Level = data;
-        LevelNumber = number;
+        LevelId = id;
         Tiles = (int[])data.Tiles.Clone();
 
         int spawnIndex = Array.IndexOf(Tiles, TileInfo.PlayerSpawn);
@@ -98,9 +176,11 @@ public sealed class World
         Particles.Clear();
         foreach (var def in data.Entities)
         {
-            var e = Entity.Spawn(def, data.Height, false);
+            var e = Entity.Spawn(def.Clone(), data.Height, false);   // a copy, so scripts can change props freely
             if (e != null) Entities.Add(e);
         }
+        CamLocked = false; _panTotal = 0; _shakeTicks = 0; ShakeX = ShakeY = 0; CamZoom = 1; PlayerFrozen = false;
+        _stateCmd = "";
 
         Coins = 0;
         BouncePlayer = 0;
@@ -137,23 +217,33 @@ public sealed class World
         ScreenY = (int)Math.Floor(Player.Y / GameConstants.StageHeight);
         MoveCamera();
         Player.Paint();
+
+        var chunk = Scripting.ScriptLibrary.Get(data.Script);
+        Host = chunk != null ? new Scripting.ScriptHost(this, chunk) : null;
+        Host?.Fire("start");
+
+        var pchunk = Scripting.ScriptLibrary.Get(string.IsNullOrEmpty(data.PlayerScript) ? DefaultPlayerScript : data.PlayerScript);
+        PlayerHost = pchunk != null ? new Scripting.ScriptHost(this, pchunk, null, true) : null;
+        PlayerHost?.Fire("start");
+        foreach (var e in Entities.ToArray()) AttachScript(e, true);
     }
 
-    public bool HasLevel(int n) => n >= GameConstants.FirstLevel && LevelSource != null && LevelSource(n) != null;
+    public bool HasLevel(string? id) => !string.IsNullOrEmpty(id) && LevelSource != null && LevelSource(id) != null;
 
-    internal void RequestConnect(int level, int side)
+    internal void RequestConnect(string level, int side)
     {
         Pending = new LoadRequest(level, LoadKind.Connect, false, side);
     }
 
     internal void OnWin()
     {
-        Pending = new LoadRequest(LevelNumber + 1, LoadKind.Respawn, true, 0, true);
+        FireEvent("win");
+        Pending = new LoadRequest(Level.Next ?? "", LoadKind.Respawn, true, 0, true);
     }
 
-    internal void ActivateTrigger(Entity e, int target)
+    internal void ActivateTrigger(Entity e, string target)
     {
-        if (e.TileType == TileInfo.PipeTrigger)
+        if (e.TypeId == "pipe")
         {
             Mode = WorldMode.Pipe;
             _pipeTarget = target;
@@ -185,11 +275,11 @@ public sealed class World
 
     internal void ShowDialog(string text) => DialogRequested?.Invoke(text);
 
-    internal void AddParticle(ParticleKind kind, double x, double y) => Particles.Add(new Particle(kind, x, y));
+    public void AddParticle(ParticleKind kind, double x, double y) => Particles.Add(new Particle(kind, x, y));
 
-    internal void KillPlayer()
+    public void KillPlayer()
     {
-        if (Mode == WorldMode.Playing && !GodMode) _deathQueued = true;
+        if (Mode == WorldMode.Playing && !GodMode) { _deathQueued = true; FireEvent("death"); }
     }
 
     internal void BeginLevelComplete()
@@ -201,8 +291,11 @@ public sealed class World
 
     public void Tick(InputState input)
     {
+        if (PlayerFrozen) input = default;
         Input = input;
         TickCount++;
+        Host?.Tick();
+        PlayerHost?.Tick();
         switch (Mode)
         {
             case WorldMode.Playing:
@@ -233,12 +326,102 @@ public sealed class World
             _deathStarted = false;
         }
         if (Pending.HasValue && Mode != WorldMode.Dying) Mode = WorldMode.Frozen;
+
+        if (_stateCmd.Length > 0)
+        {
+            string cmd = _stateCmd;
+            _stateCmd = "";
+            if (cmd == "save") SaveState(); else LoadState();
+        }
+    }
+
+    // ================================================================ level state
+
+    private void SaveState()
+    {
+        if (Mode != WorldMode.Playing || _deathQueued) { Notice?.Invoke("Can't save state right now"); return; }
+        States[LevelId] = CaptureState();
+        Notice?.Invoke("State saved");
+    }
+
+    private void LoadState()
+    {
+        if (!States.TryGetValue(LevelId, out var s)) { Notice?.Invoke("No saved state for this level"); return; }
+        RestoreState(s);
+        Notice?.Invoke("State loaded");
+    }
+
+    public WorldSnapshot CaptureState()
+    {
+        var s = new WorldSnapshot
+        {
+            LevelId = LevelId, Tiles = (int[])Tiles.Clone(), Coins = Coins, BouncePlayer = BouncePlayer, BumpIndex = BumpIndex,
+            ScreenX = ScreenX, ScreenY = ScreenY, CamX = CamX, CamY = CamY, CamXControl = CamXControl, CamYControl = CamYControl,
+            PlayerBehindTiles = PlayerBehindTiles, TickCount = TickCount,
+            Player = StateCopy.Capture(Player), Flags = new Dictionary<string, string>(Flags),
+            LevelGlobals = Host?.CaptureGlobals(), PlayerGlobals = PlayerHost?.CaptureGlobals(),
+        };
+        foreach (var e in Entities)
+        {
+            if (e.Removed || e.Def == null) continue;
+            s.Entities.Add(new WorldSnapshot.Ent
+            {
+                Def = e.Def.Clone(), Fields = StateCopy.Capture(e), Globals = e.Script?.CaptureGlobals(), Touching = e.Touching,
+            });
+        }
+        return s;
+    }
+
+    public void RestoreState(WorldSnapshot s)
+    {
+        Tiles = (int[])s.Tiles.Clone();
+        Coins = s.Coins; BouncePlayer = s.BouncePlayer; BumpIndex = s.BumpIndex;
+        ScreenX = s.ScreenX; ScreenY = s.ScreenY; CamX = s.CamX; CamY = s.CamY; CamXControl = s.CamXControl; CamYControl = s.CamYControl;
+        PlayerBehindTiles = s.PlayerBehindTiles; TickCount = s.TickCount;
+        StateCopy.Restore(Player, s.Player);
+        Player.Paint();
+        Flags.Clear();
+        foreach (var kv in s.Flags) Flags[kv.Key] = kv.Value;
+        Host?.RestoreGlobals(s.LevelGlobals);
+        PlayerHost?.RestoreGlobals(s.PlayerGlobals);
+
+        Entities.Clear();
+        Particles.Clear();
+        foreach (var se in s.Entities)
+        {
+            var def = se.Def.Clone();
+            var e = Entity.Spawn(def, Level.Height, false);
+            if (e == null) continue;
+            StateCopy.Restore(e, se.Fields);
+            e.Touching = se.Touching;
+            Entities.Add(e);
+            AttachScript(e, false);
+            e.Script?.RestoreGlobals(se.Globals);
+        }
+        Mode = WorldMode.Playing;
+        Pending = null;
+        _deathQueued = false;
+        _deathStarted = false;
+        PlayerFrozen = false;
+        CamLocked = false; _panTotal = 0; _shakeTicks = 0; ShakeX = ShakeY = 0; CamZoom = 1;
     }
 
     private void MoveEntities()
     {
         for (int i = 0; i < Entities.Count; i++)
-            Entities[i].Update(this);
+        {
+            var e = Entities[i];
+            e.Update(this);
+            if (e.Script != null && !e.Removed)
+            {
+                bool touching = e.TouchesPlayer(this);
+                if (touching && !e.Touching) e.Script.Fire("touch");
+                e.Touching = touching;
+                e.Script.Tick();
+            }
+        }
+        for (int i = 0; i < Entities.Count; i++)
+            if (Entities[i].Removed && Entities[i].Script is { } sh) { sh.Fire("remove"); sh.Flush(); }
         Entities.RemoveAll(e => e.Removed);
     }
 
@@ -269,7 +452,7 @@ public sealed class World
         if (!onScreen)
         {
             Mode = WorldMode.Frozen;
-            Pending = new LoadRequest(LevelNumber, LoadKind.Respawn, false);
+            Pending = new LoadRequest(LevelId, LoadKind.Respawn, false);
         }
     }
 
@@ -347,6 +530,7 @@ public sealed class World
         }
         if (!GodMode && !(mode == 1 || mode == 7))
             LimitCamera(272, 180);
+        ApplyScriptCamera();
     }
 
     private void CameraScreenMode()

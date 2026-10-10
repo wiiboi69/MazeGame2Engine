@@ -1,0 +1,168 @@
+{
+ "id": "world_1",
+ "name": "Green Hills",
+ "start": "n1",
+ "layers": [
+  {
+   "image": "custom/hills.png",
+   "x": 640,
+   "y": 420,
+   "scale": 5,
+   "parallax": 0.3
+  }
+ ],
+ "nodes": [
+  {
+   "id": "n1",
+   "name": "Level 1",
+   "level": "level_002",
+   "x": 120,
+   "y": 520
+  },
+  {
+   "id": "n2",
+   "name": "Level 2",
+   "level": "level_003",
+   "x": 250,
+   "y": 360,
+   "requires": [
+    "n1"
+   ],
+   "links": [
+    "n1"
+   ]
+  },
+  {
+   "id": "n3",
+   "name": "Level 3",
+   "level": "level_004",
+   "x": 380,
+   "y": 520,
+   "requires": [
+    "n2"
+   ],
+   "links": [
+    "n2"
+   ]
+  },
+  {
+   "id": "n4",
+   "name": "Level 4",
+   "level": "level_005",
+   "x": 510,
+   "y": 360,
+   "requires": [
+    "n3"
+   ],
+   "links": [
+    "n3"
+   ]
+  },
+  {
+   "id": "n5",
+   "name": "Level 5",
+   "level": "level_006",
+   "x": 640,
+   "y": 520,
+   "requires": [
+    "n4"
+   ],
+   "links": [
+    "n4"
+   ]
+  },
+  {
+   "id": "n6",
+   "name": "Level 6",
+   "level": "level_007",
+   "x": 770,
+   "y": 360,
+   "requires": [
+    "n5"
+   ],
+   "links": [
+    "n5"
+   ]
+  },
+  {
+   "id": "n7",
+   "name": "Level 7",
+   "level": "level_008",
+   "x": 900,
+   "y": 520,
+   "requires": [
+    "n6"
+   ],
+   "links": [
+    "n6"
+   ]
+  },
+  {
+   "id": "n8",
+   "name": "Level 8",
+   "level": "level_009",
+   "x": 1030,
+   "y": 360,
+   "requires": [
+    "n7"
+   ],
+   "links": [
+    "n7"
+   ]
+  },
+  {
+   "id": "n9",
+   "name": "Level 9",
+   "level": "level_010",
+   "x": 1160,
+   "y": 520,
+   "requires": [
+    "n8"
+   ],
+   "links": [
+    "n8"
+   ]
+  },
+  {
+   "id": "portal",
+   "name": "To the ruins",
+   "portal": "world_2",
+   "x": 1290,
+   "y": 360,
+   "requires": [
+    "n9"
+   ],
+   "links": [
+    "n9"
+   ]
+  }
+ ],
+ "mode": "path",
+ "width": 47,
+ "height": 23,
+ "tiles": [
+  "grass*5 flowers*2 grass*8 hills grass*5 flowers grass*3 flowers grass*11 forest*2 grass*2 mountain*6",
+  "grass*8 hills grass*9 flowers grass*2 forest grass*2 hills grass*3 flowers grass flowers grass*7 forest grass flowers mountain*6",
+  "grass*19 flowers sand water*5 grass*6 flowers*2 grass*7 mountain*6",
+  "flowers grass*6 hills grass*2 forest grass*5 hills grass*3 sand water*5 grass hills grass*5 forest grass*7 mountain*6",
+  "grass*11 flowers grass*3 flowers grass*4 sand water*5 grass*14 hills mountain*6",
+  "grass flowers grass*6 flowers*2 forest*2 flowers grass*2 forest grass*4 sand water*5 grass*3 forest hills grass*16",
+  "forest grass*9 forest grass*7 forest grass sand water*5 grass hills flowers grass forest grass*6 flowers grass*3 forest grass*2 flowers grass*2",
+  "grass*2 hills grass*8 forest grass*4 hills grass*7 forest*2 grass*5 hills grass*14 flowers",
+  "grass*2 hills grass*3 forest grass*21 hills grass hills grass*8 forest*2 grass*5 flowers",
+  "grass*8 forest grass*2 forest grass*2 forest grass*13 forest grass*5 hills grass*2 hills grass*2 forest grass forest grass*4",
+  "grass*3 hills flowers grass*8 flowers grass*12 forest*2 grass*2 hills*2 grass*5 forest grass*7 flowers grass",
+  "grass*7 town grass*5 flowers grass town grass*5 flowers grass*2 town grass*3 forest grass*2 flowers town grass forest grass*5 castle grass*6",
+  "grass*6 road flowers road grass hills grass*3 road grass road grass*3 hills grass*2 road grass road grass*2 flowers grass*2 road grass road grass hills grass hills flowers road hills grass flowers*2 grass*3",
+  "flowers grass*2 flowers grass road forest grass hills road grass forest flowers road grass*3 road grass*4 road grass forest grass road grass flowers*2 road hills flowers*2 road grass*3 road grass*3 flowers grass*3 forest",
+  "grass*2 forest grass*2 road grass hills grass road grass*3 road grass*4 road hills grass*2 road grass*2 hills road flowers grass*2 road forest grass*2 road grass*3 road grass*3 forest grass*2 forest grass",
+  "forest*2 grass*2 road hills grass*2 flowers grass road grass road grass*5 hills road grass road forest flowers grass*3 road grass road grass*5 road grass road forest grass*7 forest",
+  "grass*3 town grass*7 town grass forest grass hills grass*4 town grass*7 town grass*5 hills grass town grass*3 flowers grass*6",
+  "grass forest grass*3 hills grass*6 hills grass*13 flowers grass*3 hills flowers grass*6 flowers hills flowers grass*2 flowers grass forest grass",
+  "grass*4 flowers grass*6 forest grass*6 hills flowers grass*10 hills*2 grass*9 hills grass*5",
+  "grass*2 flowers grass*6 forest grass*8 hills grass*9 forest grass*2 forest grass*2 forest grass*5 flowers grass*2 flowers grass*3",
+  "sand water*3 sand*3 water sand*2 water sand*2 water sand*5 water sand*9 water sand*4 water sand*4 water*2 sand*3 water sand*2",
+  "water*47",
+  "deep_water*47"
+ ]
+}

@@ -11,6 +11,7 @@ public enum EntityKind
     Trigger,      // tiles 77-79, doors and pipes to other levels
     Squish,       // defeated enemy tumbling off screen
     Flip,         // enemy bumped from below (hook, see World.BumpIndex)
+    Custom,       // entities defined in GameContent.cs
 }
 
 public enum EntityLayer { BehindTiles, Normal, Front }
@@ -19,7 +20,7 @@ public enum EntityLayer { BehindTiles, Normal, Front }
 /// One running entity (a "clone" of the original Enemy sprite). Costume numbers refer to the original
 /// "Enemy" sprite costume list.
 /// </summary>
-public sealed class Entity
+public class Entity
 {
     public const int CosBig = 1, CosPole = 2, CosPoleHitbox = 3, CosPipeTrigger = 4, CosDoorTrigger = 5, CosDoorWide = 6,
         CosEndGlobeStatic = 7, CosWalk1 = 8, CosDanger1 = 12, CosGlobe1 = 16, CosDangerDie = 43, CosDangerDie2 = 44;
@@ -27,9 +28,13 @@ public sealed class Entity
     private const double T = GameConstants.Tiny;
 
     public EntityKind Kind;
-    public int TileType;
+    /// <summary>String id of the <see cref="EntityType"/> this entity was created from.</summary>
+    public string TypeId = "";
+    /// <summary>The properties stored with the entity in the level file.</summary>
+    public Dictionary<string, string> Props = new();
+    /// <summary>Custom image (png/svg path relative to the assets folder). Null = use the original enemy costumes.</summary>
+    public string? Texture;
     public double X, Y;
-    public double PrevX = double.NaN, PrevY = double.NaN;   // NaN = not yet ticked (use current)
     public double Width, Height;          // half extents
     public double Dir = 90;
     public double SpeedX, SpeedY;
@@ -43,6 +48,14 @@ public sealed class Entity
     public bool AllAround;
     public double LastDir;
     public bool Removed;
+    /// <summary>The level definition this entity was created from (a private copy; script prop changes land here).</summary>
+    public EntityDef? Def;
+    /// <summary>This entity's own script runtime (from its "script" prop), or null.</summary>
+    public Scripting.ScriptHost? Script;
+    /// <summary>True while the player overlaps this entity (drives the "touch" event).</summary>
+    public bool Touching;
+    /// <summary>Name given to this entity in the editor ("id" prop); scripts address it by this.</summary>
+    public string Id => Props.TryGetValue("id", out var v) ? v : "";
     public bool Visible = true;
     public EntityLayer Layer = EntityLayer.Normal;
 
@@ -56,39 +69,62 @@ public sealed class Entity
 
     // ======================================================================== spawning
 
+    /// <summary>Creates the runtime entity for a level definition via the <see cref="EntityRegistry"/>.</summary>
     public static Entity? Spawn(EntityDef d, int levelHeight, bool editor)
     {
+        var type = EntityRegistry.Find(d.Type);
+        if (type == null) return null;
+        var e = type.Create(d, editor);
+        if (e == null) return null;
+        e.TypeId = type.Id;
+        e.Props = d.Props;
+        e.Def = d;
+        e.Texture ??= type.Texture;
+        return e;
+    }
+
+    /// <summary>Helper for custom entities: put the entity in cell (cx, cy), standing on the bottom of the cell.</summary>
+    public void PlaceInCell(int cx, int cy, double halfWidth, double halfHeight)
+    {
+        Width = halfWidth;
+        Height = halfHeight;
+        X = cx * 32 + 16;
+        Y = cy * 32 + halfHeight;
+    }
+
+    internal static Entity? SpawnBuiltin(EntityDef d, bool editor)
+    {
         double cellX = d.X * 32, cellY = d.Y * 32;
-        var e = new Entity { TileType = d.Type, Param = d.Param };
+        var e = new Entity { TypeId = d.Type, Props = d.Props, Param = d.Get("target") };
         switch (d.Type)
         {
-            case TileInfo.Walker:
+            case "walker":
                 e.Kind = EntityKind.Walker; e.Costume = CosWalk1; e.Width = 12; e.Height = 18;
                 e.X = cellX + 16; e.Y = cellY + e.Height; break;
-            case TileInfo.Danger:
+            case "danger":
                 e.Kind = EntityKind.Danger; e.Costume = CosDanger1; e.Width = 12; e.Height = 18;
                 e.X = cellX + 16; e.Y = cellY + e.Height; break;
-            case TileInfo.Star:
+            case "npc":
                 e.Kind = EntityKind.Npc; e.Costume = CosDanger1; e.Width = 12; e.Height = 18;
                 e.X = cellX + 16; e.Y = cellY + e.Height;
-                e.Extra = string.IsNullOrEmpty(d.Param) ? "hello" : LevelData.DecodeText(d.Param);
+                e.Extra = d.Get("text", "hello");
                 if (e.Extra.Length == 0) e.Extra = "hello";
                 break;
-            case TileInfo.EndBox:
+            case "end_box":
                 e.Kind = EntityKind.EndBox; e.Costume = CosEndGlobeStatic; e.Width = 16; e.Height = 16;
                 e.X = cellX + 16; e.Y = cellY + 16; e.SizePct = 20; break;
-            case TileInfo.Piranha:
+            case "piranha":
                 e.Kind = EntityKind.Pole; e.Costume = CosPole; e.Width = 16; e.Height = 32;
                 e.X = cellX + 16 + 16; e.Y = cellY + 32;
                 if (!editor) e.Y -= 64;
                 e.Layer = EntityLayer.BehindTiles; break;
-            case TileInfo.DoorTrigger:
+            case "door":
                 e.Kind = EntityKind.Trigger; e.Costume = CosDoorTrigger; e.Width = 16; e.Height = 8;
                 e.X = cellX + 16; e.Y = cellY + 8 + 10; e.Extra = "T-DO-1"; break;
-            case TileInfo.PipeTrigger:
+            case "pipe":
                 e.Kind = EntityKind.Trigger; e.Costume = CosPipeTrigger; e.Width = 16; e.Height = 32;
                 e.X = cellX + 16 + 16; e.Y = cellY + 32 - 16; e.Extra = "T-PI-1"; break;
-            case TileInfo.DoorWideTrigger:
+            case "door_wide":
                 e.Kind = EntityKind.Trigger; e.Costume = CosDoorWide; e.Width = 32; e.Height = 32;
                 e.X = cellX + 16; e.Y = cellY + 32 - 16; e.Extra = "T-DW-1"; break;
             default:
@@ -106,7 +142,7 @@ public sealed class Entity
         return (r != 0 && (r < 0) != (b < 0)) ? r + b : r;
     }
 
-    private void GetTile(World w, double px, double py)
+    protected void GetTile(World w, double px, double py)
     {
         w.TileAt(px, py, out _tile, out _tileIndex);
         _tileShape = TileInfo.Shape(_tile);
@@ -162,7 +198,8 @@ public sealed class Entity
         }
     }
 
-    private void MoveSpriteX(World w)
+    /// <summary>Move horizontally by SpeedX with tile collision (turns Dir around at walls).</summary>
+    protected void MoveSpriteX(World w)
     {
         double origY = Y;
         X += SpeedX;
@@ -183,7 +220,8 @@ public sealed class Entity
         }
     }
 
-    private void MoveSpriteY(World w)
+    /// <summary>Move vertically by SpeedY with tile collision; Falling is 0 while standing on the ground.</summary>
+    protected void MoveSpriteY(World w)
     {
         Y += SpeedY;
         Falling++;
@@ -198,7 +236,7 @@ public sealed class Entity
     // ======================================================================== behaviour
 
     /// <summary>"when I receive move enemy" for this clone.</summary>
-    public void Update(World w)
+    public virtual void Update(World w)
     {
         switch (Kind)
         {
@@ -209,10 +247,14 @@ public sealed class Entity
             case EntityKind.EndBoxSpin: UpdateEndBoxSpin(w); break;
             case EntityKind.EndBox: UpdateEndBox(w); break;
             case EntityKind.Npc: UpdateNpc(w); break;
+            case EntityKind.Custom: break;
             case EntityKind.Walker: TickNpcBase(w); Frame += 0.1; Costume = CosWalk1 + (int)Math.Floor(Mod(Frame, 4)); break;
             case EntityKind.Danger: TickNpcBase(w); UpdateDanger(w); break;
         }
     }
+
+    /// <summary>The walker AI: gravity, walk in Dir, hop up one-tile ledges, get bumped from below.</summary>
+    protected void StepWalker(World w) => TickNpcBase(w);
 
     private void TickNpcBase(World w)
     {
@@ -319,6 +361,8 @@ public sealed class Entity
         {
             w.PlaySound("stomped");
             w.ShowDialog(Extra);
+            string nid = Props.TryGetValue("id", out var iv) ? iv : "";
+            if (nid.Length > 0) w.FireEvent("use", nid);
         }
     }
 
@@ -380,7 +424,7 @@ public sealed class Entity
     {
         if (w.Mode != WorldMode.Playing) return;
         if (!TouchesPlayer(w) || !w.Input.UsePressed) return;
-        if (!int.TryParse(Param, out int target) || !w.HasLevel(target)) return;
-        w.ActivateTrigger(this, target);
+        if (string.IsNullOrEmpty(Param) || !w.HasLevel(Param)) return;
+        w.ActivateTrigger(this, Param);
     }
 }

@@ -18,7 +18,6 @@ public sealed class Player
     private readonly World _w;
 
     public double X, Y;
-    public double PrevX, PrevY;               // position before the last logic tick (for smooth rendering)
     public double SpeedX, SpeedY;
     public double Width = 8, Height = 18;      // half extents of the hit box
     public int Falling = 99, Jumping = 99;
@@ -647,23 +646,25 @@ public sealed class Player
     private void CollectAt(double px, double py)
     {
         GetTile(px, py);
+        if (TileInfo.IsDeadly(_tile)) _w.KillPlayer();
         if (TileInfo.IsGem(_tile) && _tileIndex >= 0)
         {
             _w.Tiles[_tileIndex] = TileInfo.Air;
             _w.Coins += TileInfo.GemValue(_tile);
+            _w.FireEvent("gem");
             _w.PlaySound("coin");
         }
     }
 
     private void HandleLevelTransition()
     {
-        if (X > -100 && X < 10 && _w.HasLevel(_w.LevelNumber - 1))
+        if (X > -100 && X < 10 && _w.HasLevel(_w.Level.Left))
         {
-            _w.RequestConnect(_w.LevelNumber - 1, -1);
+            _w.RequestConnect(_w.Level.Left!, -1);
         }
-        else if (X > 32 * _w.Level.Width && X < 32 * _w.Level.Width + 100 && _w.HasLevel(_w.LevelNumber + 1))
+        else if (X > 32 * _w.Level.Width && X < 32 * _w.Level.Width + 100 && _w.HasLevel(_w.Level.Right))
         {
-            _w.RequestConnect(_w.LevelNumber + 1, +1);
+            _w.RequestConnect(_w.Level.Right!, +1);
         }
     }
 
@@ -728,7 +729,7 @@ public sealed class Player
     internal bool DeathCaught()
     {
         GetTile(X, Y);
-        return _tile == TileInfo.LogicDeath;
+        return TileInfo.CatchesDeath(_tile);
     }
 
     internal void Recover()

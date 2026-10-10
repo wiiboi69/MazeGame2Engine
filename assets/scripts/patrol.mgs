@@ -1,0 +1,17 @@
+// Attach to any entity (script prop). Slides it back and forth. Positions are in tiles.
+var dir = 1
+var start = 0
+
+on start {
+  start = self_x()
+}
+
+on tick {
+  set_self_pos(self_x() + dir * 0.04, self_y())
+  if (self_x() > start + 3) { dir = -1 }
+  if (self_x() < start - 3) { dir = 1 }
+}
+
+on touch {
+  camera_shake(4, 0.3)
+}

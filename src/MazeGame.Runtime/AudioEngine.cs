@@ -1,11 +1,10 @@
-using NLayer;
 using Silk.NET.OpenAL;
 
 namespace MazeGame.Runtime;
 
 /// <summary>
 /// OpenAL audio: sound effects are decoded from 16-bit PCM WAV into buffers and played on a pool of sources;
-/// music (MP3) is decoded with NLayer and streamed through a queue of buffers on a dedicated source.
+/// music (Ogg / MP3 / WAV) is decoded by <see cref="AudioDecoders"/> and streamed through a queue of buffers on a dedicated source.
 /// Call <see cref="Update"/> every frame to keep the music queue filled.
 /// </summary>
 public sealed unsafe class AudioEngine : IDisposable
@@ -23,7 +22,7 @@ public sealed unsafe class AudioEngine : IDisposable
     private const int ChunkSamples = 48000;           // ~0.5 s of stereo float samples per chunk
     private readonly uint[] _musicBuf = new uint[MusicBuffers];
     private uint _musicSource;
-    private MpegFile? _mpeg;
+    private IPcmStream? _mpeg;
     private string? _musicPath;
     private bool _musicLoop;
     private readonly float[] _floatChunk = new float[ChunkSamples];
@@ -34,6 +33,18 @@ public sealed unsafe class AudioEngine : IDisposable
     public string SoundDir { get; }
     public float SfxVolume { get; set; } = 0.8f;
 
+    private float _master = 1f;
+    /// <summary>Overall volume (0..1, 0 when muted) applied to music and effects.</summary>
+    public float Master
+    {
+        get => _master;
+        set
+        {
+            _master = Math.Clamp(value, 0f, 1f);
+            if (Available) _al!.SetSourceProperty(_musicSource, SourceFloat.Gain, _musicVolume * _master);
+        }
+    }
+
     private float _musicVolume = 0.5f;
     public float MusicVolume
     {
@@ -41,7 +52,7 @@ public sealed unsafe class AudioEngine : IDisposable
         set
         {
             _musicVolume = Math.Clamp(value, 0f, 1f);
-            if (Available) _al!.SetSourceProperty(_musicSource, SourceFloat.Gain, _musicVolume);
+            if (Available) _al!.SetSourceProperty(_musicSource, SourceFloat.Gain, _musicVolume * Master);
         }
     }
 
@@ -75,7 +86,7 @@ public sealed unsafe class AudioEngine : IDisposable
         if (!Available) return;
         if (!_sfx.TryGetValue(name, out uint buf))
         {
-            buf = LoadWav(Path.Combine(SoundDir, "sfx", name + ".wav"));
+            buf = LoadSfx(Path.Combine(SoundDir, "sfx"), name);
             _sfx[name] = buf;
         }
         if (buf == 0) return;
@@ -94,45 +105,24 @@ public sealed unsafe class AudioEngine : IDisposable
         }
         _al!.SourceStop(src);
         _al.SetSourceProperty(src, SourceInteger.Buffer, (int)buf);
-        _al.SetSourceProperty(src, SourceFloat.Gain, Math.Clamp(SfxVolume * volume, 0f, 1f));
+        _al.SetSourceProperty(src, SourceFloat.Gain, Math.Clamp(SfxVolume * Master * volume, 0f, 1f));
         _al.SourcePlay(src);
     }
 
-    private uint LoadWav(string path)
+    /// <summary>Loads sfx/{name}.wav, .ogg or .mp3 (first one found) into an OpenAL buffer.</summary>
+    private uint LoadSfx(string dir, string name)
     {
+        string? path = AudioDecoders.Find(dir, name);
+        if (path == null) return 0;
         try
         {
-            if (!File.Exists(path)) return 0;
-            byte[] d = File.ReadAllBytes(path);
-            if (d.Length < 44 || d[0] != 'R' || d[1] != 'I' || d[2] != 'F' || d[3] != 'F') return 0;
-            int pos = 12;
-            int channels = 1, rate = 44100, bits = 16;
-            int dataStart = -1, dataLen = 0;
-            while (pos + 8 <= d.Length)
-            {
-                string id = System.Text.Encoding.ASCII.GetString(d, pos, 4);
-                int len = BitConverter.ToInt32(d, pos + 4);
-                int body = pos + 8;
-                if (id == "fmt ")
-                {
-                    channels = BitConverter.ToInt16(d, body + 2);
-                    rate = BitConverter.ToInt32(d, body + 4);
-                    bits = BitConverter.ToInt16(d, body + 14);
-                }
-                else if (id == "data")
-                {
-                    dataStart = body;
-                    dataLen = Math.Min(len, d.Length - body);
-                    break;
-                }
-                pos = body + len + (len & 1);
-            }
-            if (dataStart < 0 || bits != 16 || channels < 1 || channels > 2) return 0;
-
+            var dec = AudioDecoders.DecodeAll(path);
+            if (dec == null) return 0;
+            var (pcm, channels, rate) = dec.Value;
             uint buffer = _al!.GenBuffer();
             var format = channels == 1 ? BufferFormat.Mono16 : BufferFormat.Stereo16;
-            fixed (byte* p = &d[dataStart])
-                _al.BufferData(buffer, format, p, dataLen, rate);
+            fixed (short* p = pcm)
+                _al.BufferData(buffer, format, p, pcm.Length * sizeof(short), rate);
             return buffer;
         }
         catch (Exception ex)
@@ -147,14 +137,15 @@ public sealed unsafe class AudioEngine : IDisposable
     public void PlayMusic(string name, bool loop = true)
     {
         if (!Available) return;
-        string path = Path.Combine(SoundDir, "music", name + ".mp3");
-        if (!File.Exists(path)) return;
+        string? path = AudioDecoders.Find(Path.Combine(SoundDir, "music"), name);
+        if (path == null) return;
         if (_musicPath == path && IsMusicPlaying) return;
 
         StopMusic();
         try
         {
-            _mpeg = new MpegFile(path);
+            _mpeg = AudioDecoders.Open(path);
+            if (_mpeg == null) return;
         }
         catch (Exception ex)
         {
@@ -163,6 +154,7 @@ public sealed unsafe class AudioEngine : IDisposable
         }
         _musicPath = path;
         _musicLoop = loop;
+        if (_mpeg.Channels < 1 || _mpeg.Channels > 2) { _mpeg.Dispose(); _mpeg = null; _musicPath = null; return; }
         _musicEnded = false;
 
         int queued = 0;
@@ -173,7 +165,7 @@ public sealed unsafe class AudioEngine : IDisposable
             _al!.SourceQueueBuffers(_musicSource, 1, &b);
             queued++;
         }
-        _al!.SetSourceProperty(_musicSource, SourceFloat.Gain, _musicVolume);
+        _al!.SetSourceProperty(_musicSource, SourceFloat.Gain, _musicVolume * Master);
         if (queued > 0) _al.SourcePlay(_musicSource);
     }
 
@@ -213,12 +205,13 @@ public sealed unsafe class AudioEngine : IDisposable
     private bool FillBuffer(uint buffer)
     {
         if (_mpeg == null || _musicEnded) return false;
-        int n = _mpeg.ReadSamples(_floatChunk, 0, _floatChunk.Length);
+        int n = _mpeg.Read(_floatChunk, _floatChunk.Length);
         if (n <= 0 && _musicLoop && _musicPath != null)
         {
             _mpeg.Dispose();
-            _mpeg = new MpegFile(_musicPath);
-            n = _mpeg.ReadSamples(_floatChunk, 0, _floatChunk.Length);
+            _mpeg = AudioDecoders.Open(_musicPath);
+            if (_mpeg == null) { _musicEnded = true; return false; }
+            n = _mpeg.Read(_floatChunk, _floatChunk.Length);
         }
         if (n <= 0) { _musicEnded = true; return false; }
         for (int i = 0; i < n; i++)

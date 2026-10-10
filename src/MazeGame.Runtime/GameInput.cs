@@ -24,8 +24,9 @@ public sealed class GameInput
     {
         var s = new InputState
         {
-            Left = Down("left"), Right = Down("right"), Up = Down("up"), Down = Down("down"),
-            Z = Down("z"), X = Down("x"), Use = Down("use"),
+            Left = Down("left") || Pad.Down(PadAct.Left), Right = Down("right") || Pad.Down(PadAct.Right),
+            Up = Down("up") || Pad.Down(PadAct.Jump), Down = Down("down") || Pad.Down(PadAct.Down),
+            Z = Down("z") || Pad.Down(PadAct.Z), X = Down("x") || Pad.Down(PadAct.X), Use = Down("use") || Pad.Down(PadAct.Use),
         };
         s.UsePressed = s.Use && !_useWasDown;
         _useWasDown = s.Use;

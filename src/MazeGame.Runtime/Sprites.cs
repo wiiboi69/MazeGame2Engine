@@ -1,3 +1,4 @@
+using MazeGame.Core;
 using System.Numerics;
 using System.Text.Json;
 using Raylib_cs;
@@ -12,6 +13,8 @@ public sealed class Sprite
     public Texture2D Tex;
     public float SrcW, SrcH;   // size in source units
     public float Cx, Cy;       // rotation centre in source units from the top-left
+    /// <summary>Visible-pixel box relative to the rotation centre: centre offset (right, down) and half size.</summary>
+    public float VisDx, VisDy, VisHw, VisHh;
 }
 
 public sealed class CostumeInfo
@@ -23,6 +26,7 @@ public sealed class CostumeInfo
     public int Res { get; set; } = 1;
     public double Cx { get; set; }
     public double Cy { get; set; }
+    public double[]? Bbox { get; set; }
 }
 
 /// <summary>
@@ -73,7 +77,53 @@ public sealed class SpriteLibrary : IDisposable
     public Sprite? ByIndex(string group, int index) =>
         _byIndex.TryGetValue(group, out var map) && map.TryGetValue(index, out var key) ? Get(group, key) : null;
 
-    public Sprite? Tile(int id) => Get("tiles", id.ToString());
+    /// <summary>Sprite for a runtime tile number: the original costume, or the tile's custom texture / animation frame.</summary>
+    public Sprite? Tile(int id, double time = 0)
+    {
+        var def = TileRegistry.ByNum(id);
+        if (def != null)
+        {
+            if (def.Frames is { Length: > 0 } frames)
+            {
+                int i = (int)Math.Floor(time * Math.Max(0.01, def.Fps)) % frames.Length;
+                string f = frames[i];
+                if (f.StartsWith("tile:", StringComparison.Ordinal))
+                {
+                    var other = TileRegistry.Find(f.Substring(5));
+                    return other == null || other.Num == id ? null : Tile(other.Num, 0);
+                }
+                return GetFile(f);
+            }
+            if (def.Texture != null) return GetFile(def.Texture);
+        }
+        return Get("tiles", id.ToString());
+    }
+
+    /// <summary>Loads a custom .png / .svg from the assets folder (cached). The rotation centre is the image centre.</summary>
+    public Sprite? GetFile(string relativePath)
+    {
+        string ck = "file/" + relativePath;
+        if (_cache.TryGetValue(ck, out var cached)) return cached;
+        Sprite? sprite = null;
+        try
+        {
+            string path = Path.Combine(_root, relativePath);
+            bool svg = path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
+            using SKBitmap? bmp = svg ? RasterSvg(path, out _, out _) : DecodePng(path);
+            if (bmp == null) throw new InvalidDataException("could not decode image");
+            float texels = svg ? SvgTexelsPerUnit : 1f;
+            sprite = new Sprite { SrcW = bmp.Width / texels, SrcH = bmp.Height / texels, Tex = Upload(bmp) };
+            sprite.Cx = sprite.SrcW / 2; sprite.Cy = sprite.SrcH / 2;
+            sprite.VisHw = sprite.SrcW / 2; sprite.VisHh = sprite.SrcH / 2;
+            Raylib.SetTextureFilter(sprite.Tex, !svg && bmp.Width <= 128 ? TextureFilter.Point : TextureFilter.Bilinear);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"[sprites] failed to load custom image '{relativePath}': {ex.Message}");
+        }
+        _cache[ck] = sprite;
+        return sprite;
+    }
 
     private Sprite Load(CostumeInfo info)
     {
@@ -90,6 +140,20 @@ public sealed class SpriteLibrary : IDisposable
             Cy = info.Kind == "svg" ? (float)info.Cy : (float)(info.Cy / Math.Max(1, info.Res)),
             Tex = Upload(bmp),
         };
+        if (info.Bbox is { Length: 4 } bb)
+        {
+            sprite.VisDx = (float)((bb[0] + bb[2]) / 2 - sprite.Cx);
+            sprite.VisDy = (float)((bb[1] + bb[3]) / 2 - sprite.Cy);
+            sprite.VisHw = (float)((bb[2] - bb[0]) / 2);
+            sprite.VisHh = (float)((bb[3] - bb[1]) / 2);
+        }
+        else
+        {
+            sprite.VisDx = sprite.SrcW / 2 - sprite.Cx;
+            sprite.VisDy = sprite.SrcH / 2 - sprite.Cy;
+            sprite.VisHw = sprite.SrcW / 2;
+            sprite.VisHh = sprite.SrcH / 2;
+        }
         bool pixelArt = info.Kind == "png" && info.Res <= 2 && bmp.Width <= 128;
         Raylib.SetTextureFilter(sprite.Tex, pixelArt ? TextureFilter.Point : TextureFilter.Bilinear);
         return sprite;

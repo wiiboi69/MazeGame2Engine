@@ -7,8 +7,15 @@ public static class GameConstants
     public const int TileSize = 32;
 
     /// <summary>The Scratch stage is 480x360 and the camera is centred on the player.</summary>
-    public const int StageWidth = 640;
     public const int StageHeight = 360;
+    /// <summary>480 in 4:3 mode, 640 in 16:9 mode (set with <see cref="SetWidescreen"/>).</summary>
+    public static int StageWidth { get; private set; } = 480;
+    public static bool Widescreen { get; private set; }
+    public static void SetWidescreen(bool on)
+    {
+        Widescreen = on;
+        StageWidth = on ? 640 : 480;
+    }
 
     /// <summary>
     /// The original runs one logic step every 2 frames of a 60 fps runtime. All speeds
@@ -18,10 +25,6 @@ public static class GameConstants
 
     /// <summary>The "-TINY" epsilon the collision code uses to stay just inside a tile.</summary>
     public const double Tiny = -0.000001;
-
-    /// <summary>Level number 1 in the original level store is the "game settings" slot (gs_2_).</summary>
-    public const int SettingsSlot = 1;
-    public const int FirstLevel = 2;
 
     // Level flag bits (level_flags_01)
     public const int FlagShowBackground = 1 << 0;

@@ -1,0 +1,76 @@
+{
+  "format": 3,
+  "id": "level_007",
+  "name": "Level 6",
+  "width": 20,
+  "height": 20,
+  "background": "#f0f000",
+  "backdrop": 1,
+  "parallax": true,
+  "underwater": true,
+  "next": "level_008",
+  "left": "level_006",
+  "right": "level_008",
+  "camera": 0,
+  "song": "0",
+  "difficulty": 0,
+  "custom": 69,
+  "extraFlags": 420,
+  "tiles": [
+    "block_wood*20",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air*18 block_wood",
+    "block_wood air player_spawn air*8 cloud*8 block_wood",
+    "block_wood air*3 ladder_top air gem_1 air*12 block_wood",
+    "block_wood cloud*3 cloud_solid cloud*6 air*8 block_wood",
+    "block_wood air*3 ladder air*14 block_wood",
+    "block_wood air*3 ladder air*14 block_wood",
+    "block_wood air*3 ladder air*2 bush*6 air*6 block_wood",
+    "block_wood wood_4*18 block_wood"
+  ],
+  "entities": [
+    {
+      "type": "door",
+      "x": 9,
+      "y": 5,
+      "props": {
+        "target": "level_008"
+      }
+    },
+    {
+      "type": "npc",
+      "x": 2,
+      "y": 1
+    },
+    {
+      "type": "end_box",
+      "x": 16,
+      "y": 3
+    },
+    {
+      "type": "end_box",
+      "x": 16,
+      "y": 2
+    },
+    {
+      "type": "end_box",
+      "x": 16,
+      "y": 1
+    },
+    {
+      "type": "end_box",
+      "x": 16,
+      "y": 4
+    }
+  ]
+}

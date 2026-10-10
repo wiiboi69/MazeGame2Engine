@@ -5,15 +5,25 @@ public sealed class EntityDef
 {
     public int X;
     public int Y;
-    /// <summary>The tile id used as the brush (29,30,46,47,68,77,78,79).</summary>
-    public int Type;
-    /// <summary>
-    /// Original "spedi" value. Triggers: target level number. Useable NPC: hex-encoded UTF-8 text
-    /// (hex keeps the file readable by the original Scratch reader). Otherwise empty.
-    /// </summary>
-    public string Param = "";
+    /// <summary>String id of the <see cref="EntityType"/>, e.g. "walker" or "slime".</summary>
+    public string Type = "";
+    /// <summary>Free-form settings stored in the level file ("text", "target", or anything your entity reads).</summary>
+    public Dictionary<string, string> Props = new();
 
-    public EntityDef Clone() => new() { X = X, Y = Y, Type = Type, Param = Param };
+    public string Get(string name, string fallback = "") => Props.TryGetValue(name, out var v) ? v : fallback;
+
+    public int GetInt(string name, int fallback = 0) =>
+        Props.TryGetValue(name, out var v) && int.TryParse(v, System.Globalization.NumberStyles.Integer,
+            System.Globalization.CultureInfo.InvariantCulture, out int n) ? n : fallback;
+
+    public double GetDouble(string name, double fallback = 0) =>
+        Props.TryGetValue(name, out var v) && double.TryParse(v, System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out double n) ? n : fallback;
+
+    public bool GetBool(string name, bool fallback = false) =>
+        Props.TryGetValue(name, out var v) ? v.Equals("true", StringComparison.OrdinalIgnoreCase) || v == "1" : fallback;
+
+    public EntityDef Clone() => new() { X = X, Y = Y, Type = Type, Props = new Dictionary<string, string>(Props) };
 }
 
 /// <summary>A decoded level. Tiles are stored column-major: index = x * Height + y, y=0 is the bottom.</summary>
@@ -24,13 +34,28 @@ public sealed class LevelData
     public int[] Tiles = Array.Empty<int>();
     public List<EntityDef> Entities = new();
 
+    /// <summary>Unique string id (also the file name). Doors, overworld nodes and saves refer to levels by it.</summary>
+    public string Id = "";
+    /// <summary>Id of the level that follows when this one is completed (optional).</summary>
+    public string? Next;
+    /// <summary>Levels entered by walking off the left / right edge of this one (optional).</summary>
+    public string? Left, Right;
+    /// <summary>Script file (under the assets folder, e.g. "scripts/intro.mgs") run while this level is played.</summary>
+    public string Script = "";
+    /// <summary>Script id run by the player while this level is played (empty = game.json "playerScript").</summary>
+    public string PlayerScript = "";
+    /// <summary>Background / foreground tile and image layers around the main (collision) layer.</summary>
+    public List<Layer> Layers = new();
+    /// <summary>Editor only: which grid <see cref="Get"/> / <see cref="Set"/> use. 0 = main layer, n = Layers[n-1].</summary>
+    public int EditLayer;
+    public int[] Grid => EditLayer > 0 && EditLayer <= Layers.Count && Layers[EditLayer - 1].Kind == LayerKind.Tiles
+        ? Layers[EditLayer - 1].Tiles : Tiles;
+
     // Header fields (names follow the original variables)
     public string BackgroundColor = "#f0f000";
     public int Backdrop = 1;
     public int Flags = 5;            // level_flags_01 : bit0 = parallax background, bit1 = underwater
     public int CameraMode;           // level_flag_camera (low byte)
-    public string ForkVersion = "mg2ex";
-    public string Version = "1.0v";
     public string Name = "test";
     public int Difficulty;
     public string Song = "0";
@@ -55,11 +80,11 @@ public sealed class LevelData
     public bool InBounds(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
 
     /// <summary>Tile id at a cell; anything outside the grid is empty (id 0, shape "").</summary>
-    public int Get(int x, int y) => InBounds(x, y) ? Tiles[Index(x, y)] : 0;
+    public int Get(int x, int y) => InBounds(x, y) ? Grid[Index(x, y)] : 0;
 
     public void Set(int x, int y, int tile)
     {
-        if (InBounds(x, y)) Tiles[Index(x, y)] = tile;
+        if (InBounds(x, y)) Grid[Index(x, y)] = tile;
     }
 
     /// <summary>The original "generate level": wood wall columns at both ends, floor row at the bottom.</summary>
@@ -90,15 +115,22 @@ public sealed class LevelData
 
     public void Resize(int newWidth, int newHeight)
     {
-        var n = new int[newWidth * newHeight];
-        Array.Fill(n, TileInfo.Air);
-        for (int x = 0; x < Math.Min(Width, newWidth); x++)
-            for (int y = 0; y < Math.Min(Height, newHeight); y++)
-                n[x * newHeight + y] = Tiles[Index(x, y)];
+        int[] Move(int[] old)
+        {
+            var n = new int[newWidth * newHeight];
+            Array.Fill(n, TileInfo.Air);
+            for (int x = 0; x < Math.Min(Width, newWidth); x++)
+                for (int y = 0; y < Math.Min(Height, newHeight); y++)
+                    n[x * newHeight + y] = old[x * Height + y];
+            return n;
+        }
+        var main = Move(Tiles);
+        foreach (var l in Layers)
+            if (l.Kind == LayerKind.Tiles) l.Tiles = Move(l.Tiles);
         Entities.RemoveAll(e => e.X >= newWidth || e.Y >= newHeight);
         Width = newWidth;
         Height = newHeight;
-        Tiles = n;
+        Tiles = main;
     }
 
     public LevelData Clone()
@@ -106,21 +138,7 @@ public sealed class LevelData
         var c = (LevelData)MemberwiseClone();
         c.Tiles = (int[])Tiles.Clone();
         c.Entities = Entities.Select(e => e.Clone()).ToList();
+        c.Layers = Layers.Select(l => l.Clone()).ToList();
         return c;
-    }
-
-    // ---- entity param helpers -------------------------------------------------------------
-
-    public static string EncodeText(string text)
-    {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(text);
-        return Convert.ToHexString(bytes).ToLowerInvariant();
-    }
-
-    public static string DecodeText(string hex)
-    {
-        if (string.IsNullOrEmpty(hex) || hex.Length % 2 != 0) return "";
-        try { return System.Text.Encoding.UTF8.GetString(Convert.FromHexString(hex)); }
-        catch (FormatException) { return ""; }
     }
 }
