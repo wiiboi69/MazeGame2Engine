@@ -1,3 +1,4 @@
+## this was made with claude ai bro
 # Maze Game 2 – C# port
 
 A C# port of the Scratch project **maze_game_2_engine.sb3**, using
