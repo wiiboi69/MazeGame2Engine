@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Android head. Raylib is desktop-only, so the shared game sources (Runtime + Game) are compiled straight into this
+    project against Shim/ (a Raylib_cs-compatible layer on Silk.NET OpenGL ES) instead of referencing MazeGame.Runtime.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <ApplicationId>com.nito.mazegame</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <RootNamespace>MazeGame.Android</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="MainActivity.cs" />
+    <Compile Include="Shim\*.cs" />
+    <Compile Include="..\MazeGame.Runtime\*.cs" />
+    <Compile Include="..\MazeGame\Game.cs" />
+    <Compile Include="..\MazeGame\SettingsScreen.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="3.119.1" />
+    <PackageReference Include="Svg.Skia" Version="3.*" />
+    <PackageReference Include="Silk.NET.OpenAL" Version="2.*" />
+    <PackageReference Include="Silk.NET.OpenAL.Soft.Native" Version="1.*" />
+    <PackageReference Include="Silk.NET.OpenGLES" Version="2.*" />
+    <PackageReference Include="NVorbis" Version="0.10.*" />
+    <PackageReference Include="NLayer" Version="1.16.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MazeGame.Core\MazeGame.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AndroidAsset Include="..\..\assets\**\*.*" Link="assets\assets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <AndroidAsset Include="..\..\levels\**\*.json" Link="levels\%(RecursiveDir)%(Filename)%(Extension)" />
+    <AndroidAsset Include="..\..\worlds\**\*.json" Link="worlds\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

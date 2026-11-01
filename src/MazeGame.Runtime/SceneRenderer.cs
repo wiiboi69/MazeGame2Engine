@@ -20,6 +20,30 @@ public sealed class SceneRenderer
 
     public SceneRenderer(SpriteLibrary sprites) { _sprites = sprites; }
 
+    // ---- render interpolation: logic ticks at 30 Hz, drawing runs at any frame rate ----
+    /// <summary>0..1 = how far we are between the previous and the current logic tick. 1 = draw the latest tick as is.</summary>
+    public double InterpAlpha = 1;
+    private const double TeleportDist = 48;   // a move bigger than this in one tick (door, respawn, camera snap) is not blended
+    private readonly Dictionary<Entity, (double X, double Y)> _prevEnt = new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<Particle, (double X, double Y)> _prevPart = new(ReferenceEqualityComparer.Instance);
+    private (double X, double Y) _prevPlayer, _prevCam;
+    private World? _prevWorld;
+    private long _prevTick = -10;
+
+    /// <summary>Call right BEFORE each <c>World.Tick</c>: remembers where everything is now (= where it was one tick ago after the tick).</summary>
+    public void CaptureInterp(World w)
+    {
+        _prevEnt.Clear(); _prevPart.Clear();
+        foreach (var e in w.Entities) _prevEnt[e] = (e.X, e.Y);
+        foreach (var p in w.Particles) _prevPart[p] = (p.X, p.Y);
+        _prevPlayer = (w.Player.X, w.Player.Y);
+        _prevCam = (w.CamX, w.CamY);
+        _prevWorld = w;
+        _prevTick = w.TickCount;
+    }
+
+    private static double Lerp(double a, double b, double t) => Math.Abs(b - a) > TeleportDist ? b : a + (b - a) * t;
+
     public SpriteLibrary Sprites => _sprites;
 
     private static Color White => new Color((byte)255, (byte)255, (byte)255, (byte)255);
@@ -296,6 +320,30 @@ public sealed class SceneRenderer
 
     /// <summary>Everything in the right order for gameplay: backdrop, back layers, entities, tiles, player, front layers.</summary>
     public void DrawWorld(World w)
+    {
+        double t = InterpAlpha;
+        // only blend when the stored snapshot is exactly one tick behind the world; otherwise (level load, state load) draw as is
+        if (t >= 1 || _prevWorld != w || w.TickCount != _prevTick + 1) { DrawWorldCore(w); return; }
+
+        var saved = new List<(Entity e, double x, double y)>(w.Entities.Count);
+        var savedP = new List<(Particle p, double x, double y)>(w.Particles.Count);
+        double px = w.Player.X, py = w.Player.Y, cx0 = w.CamX, cy0 = w.CamY;
+        foreach (var e in w.Entities)
+            if (_prevEnt.TryGetValue(e, out var pe)) { saved.Add((e, e.X, e.Y)); e.X = Lerp(pe.X, e.X, t); e.Y = Lerp(pe.Y, e.Y, t); }
+        foreach (var p in w.Particles)
+            if (_prevPart.TryGetValue(p, out var pp)) { savedP.Add((p, p.X, p.Y)); p.X = Lerp(pp.X, p.X, t); p.Y = Lerp(pp.Y, p.Y, t); }
+        w.Player.X = Lerp(_prevPlayer.X, px, t); w.Player.Y = Lerp(_prevPlayer.Y, py, t);
+        w.CamX = Lerp(_prevCam.X, cx0, t); w.CamY = Lerp(_prevCam.Y, cy0, t);
+        try { DrawWorldCore(w); }
+        finally
+        {
+            foreach (var (e, x, y) in saved) { e.X = x; e.Y = y; }
+            foreach (var (p, x, y) in savedP) { p.X = x; p.Y = y; }
+            w.Player.X = px; w.Player.Y = py; w.CamX = cx0; w.CamY = cy0;
+        }
+    }
+
+    private void DrawWorldCore(World w)
     {
         double cx = w.CamX + w.ShakeX, cy = w.CamY + w.ShakeY, ppu = 2 * w.CamZoom;
         Ppu = 2;

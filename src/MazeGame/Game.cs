@@ -907,6 +907,7 @@ public sealed class Game : IDisposable
         {
             _acc -= Step;
             _scene.AnimTime += Step;
+            _scene.CaptureInterp(_world);
             _world.Tick(_input.Poll());
             HandlePending();
         }
@@ -962,7 +963,9 @@ public sealed class Game : IDisposable
     private void DrawPlayfield()
     {
         if (_world == null) return;
+        _scene.InterpAlpha = _state == GameState.Playing ? Math.Clamp(_acc / Step, 0, 1) : 1;
         _scene.DrawWorld(_world);
+        _scene.InterpAlpha = 1;
         _scene.BeginStage();
 
         // pink loading fade (only just after the level appeared)
@@ -987,14 +990,14 @@ public sealed class Game : IDisposable
                 break;
 
             case GameState.Dialog:
-            {
-                float bw = 720, bx = (AppWindow.VW - bw) / 2f;
-                _ui.Rect(bx, 470, bw, 190, new SKColor(10, 10, 40, 235), 16, new SKColor(255, 255, 255, 160), 3);
-                _ui.Text(_dialogText, bx + 40, 540, 32, SKColors.White, false, 0, true);
-                _ui.Text("press E / Enter", bx + bw - 20, 640, 16, new SKColor(255, 255, 255, 170), false, 2);
-                UpdateDialogInput();
-                break;
-            }
+                {
+                    float bw = 720, bx = (AppWindow.VW - bw) / 2f;
+                    _ui.Rect(bx, 470, bw, 190, new SKColor(10, 10, 40, 235), 16, new SKColor(255, 255, 255, 160), 3);
+                    _ui.Text(_dialogText, bx + 40, 540, 32, SKColors.White, false, 0, true);
+                    _ui.Text("press E / Enter", bx + bw - 20, 640, 16, new SKColor(255, 255, 255, 170), false, 2);
+                    UpdateDialogInput();
+                    break;
+                }
 
             case GameState.Wipe:
                 Stage("transition", _wipeWin ? "costume2" : "costume1", _wipeX, 0, BgSize);
