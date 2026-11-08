@@ -3,3 +3,19 @@ obj/
 .vs/
 *.user
 settings.json
+
+# ---- C++ port build output / generated files
+/out/
+out-*.log
+/maze_game.exe
+/saves/
+/cpp/build/
+/cpp/build-*/
+/cpp/romfs/
+/cpp/sce_sys/
+# art baked from the SVGs by cpp/tools/BakeSvgs (build_*.bat / CI regenerate it)
+*.svg.png
+*.svg.psp.png
+*.svg.vita.png
+/assets/psp_sizes.json
+/assets/vita_sizes.json

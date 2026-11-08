@@ -1,0 +1,9 @@
+cpp/build/
+cpp/tests/CsRef/bin/
+cpp/tests/CsRef/obj/
+cpp/tools/BakeSvgs/bin/
+cpp/tools/BakeSvgs/obj/
+src/**/bin/
+src/**/obj/
+saves/
+.git/

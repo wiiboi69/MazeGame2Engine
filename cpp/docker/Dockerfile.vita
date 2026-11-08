@@ -1,0 +1,12 @@
+# Builds maze-game-2-vita.vpk with VitaSDK. From the repo root:   docker build -f cpp/docker/Dockerfile.vita --output=out .
+FROM vitasdk/vitasdk:latest AS main_builder
+ENV VITASDK=/usr/local/vitasdk
+ENV PATH=${VITASDK}/bin:${PATH}
+WORKDIR /app
+COPY . .
+# the handheld art must already exist (dotnet run --project cpp/tools/BakeSvgs -- assets --vita)
+RUN cmake -S cpp -B build-vita -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${VITASDK}/share/vita.toolchain.cmake -DMG_PLATFORM=vita \
+    && cmake --build build-vita -j2
+
+FROM scratch AS exporter
+COPY --from=main_builder /app/build-vita/maze-game-2-vita.vpk /

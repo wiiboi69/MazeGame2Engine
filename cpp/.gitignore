@@ -1,0 +1,6 @@
+build/
+tests/CsRef/bin/
+tests/CsRef/obj/
+/romfs/
+/sce_sys/
+build-ps4/

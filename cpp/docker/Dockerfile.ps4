@@ -1,0 +1,26 @@
+# Builds maze-game-2-ps4.pkg. Same toolchain recipe as ScratchEverywhere's docker/Dockerfile.ps4.
+# From the repo root:   docker build -f cpp/docker/Dockerfile.ps4 --output=out .
+FROM debian:trixie-slim AS main_builder
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PS4_HOMEBREW_SDK=/opt/ps4-homebrew-sdk
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential ca-certificates cmake clang lld llvm git pkg-config python3 tar wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# prebuilt PS4 homebrew SDK (pacbrew v0.8.1) + the Orbis headers from OpenOrbis
+RUN wget -q -O /tmp/sdk.tar.gz https://github.com/ps4-homebrew-dev/pacbrew/releases/download/v0.8.1/ps4-homebrew-dev.tar.gz \
+    && tar -xzf /tmp/sdk.tar.gz -C / && rm /tmp/sdk.tar.gz \
+    && git clone --depth 1 https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain.git /tmp/openorbis \
+    && mkdir -p /opt/ps4-homebrew-sdk/target/include/orbis \
+    && cp -r /tmp/openorbis/include/orbis/* /opt/ps4-homebrew-sdk/target/include/orbis/ \
+    && rm -rf /tmp/openorbis
+
+COPY . .
+# the SVG art must already be baked to *.svg.png (dotnet run --project cpp/tools/BakeSvgs -- assets)
+RUN /opt/ps4-homebrew-sdk/bin/orbis-cmake -S cpp -B build-ps4 -DCMAKE_VERBOSE_MAKEFILE=OFF -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build build-ps4 -j2
+
+FROM scratch AS exporter
+COPY --from=main_builder /app/build-ps4/maze-game-2-ps4.pkg /

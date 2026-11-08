@@ -1,0 +1,39 @@
+name: PS4 Nightly Build
+
+on:
+  push:
+    paths:
+      - cpp/**
+      - assets/**
+      - levels/**
+      - worlds/**
+      - .github/workflows/nightly-ps4.yml
+    branches:
+      - main
+      - master
+      - cppanywhere
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up .NET (SVG art baking)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Bake the SVG art
+        run: dotnet run -c Release --project cpp/tools/BakeSvgs -- assets
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and Export
+        run: docker build -f cpp/docker/Dockerfile.ps4 --output=out .
+      - name: Upload Artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Maze Game 2 PS4 Nightly
+          path: out/maze-game-2-ps4.pkg

@@ -1,0 +1,91 @@
+name: PC Nightly Build
+
+on:
+  push:
+    paths:
+      - cpp/**
+      - assets/**
+      - levels/**
+      - worlds/**
+      - .github/workflows/nightly-pc.yml
+    branches:
+      - main
+      - master
+      - cppanywhere
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: Windows x86_64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up .NET (SVG art baking)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Bake the SVG art
+        run: dotnet run -c Release --project cpp/tools/BakeSvgs -- assets
+      - name: Configure
+        run: cmake -S cpp -B cpp/build
+      - name: Build
+        run: cmake --build cpp/build --config Release
+      - name: Smoke test (loads and simulates every level, runs the script VM)
+        run: cpp/build/Release/core_smoke.exe .
+      - name: Package
+        shell: bash
+        run: |
+          mkdir -p package
+          cp cpp/build/Release/maze_game.exe package/
+          cp -r assets levels package/
+          [ -d worlds ] && cp -r worlds package/ || true
+          # ship the baked PNGs, drop the SVG sources and MP3s (every song has an .ogg twin)
+          find package/assets -name '*.svg' -delete
+          find package/assets -name '*.mp3' -delete
+          find package/assets \( -name '*.svg.psp.png' -o -name '*.svg.vita.png' -o -name 'psp_sizes.json' -o -name 'vita_sizes.json' \) -delete
+      - name: Upload Artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Maze Game 2 Windows Nightly
+          path: package
+
+  linux:
+    name: Linux x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up .NET (SVG art baking)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Install SDL2 build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev             libxss-dev libxfixes-dev libgl1-mesa-dev libasound2-dev libpulse-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - name: Bake the SVG art
+        run: dotnet run -c Release --project cpp/tools/BakeSvgs -- assets
+      - name: Configure
+        run: cmake -S cpp -B cpp/build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build cpp/build -j2
+      - name: Smoke test (loads and simulates every level, runs the script VM)
+        run: cpp/build/core_smoke .
+      - name: Package
+        run: |
+          mkdir -p package
+          cp cpp/build/maze_game package/
+          cp -r assets levels package/
+          [ -d worlds ] && cp -r worlds package/ || true
+          find package/assets -name '*.svg' -delete
+          find package/assets -name '*.mp3' -delete
+          find package/assets \( -name '*.svg.psp.png' -o -name '*.svg.vita.png' -o -name 'psp_sizes.json' -o -name 'vita_sizes.json' \) -delete
+      - name: Upload Artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Maze Game 2 Linux Nightly
+          path: package

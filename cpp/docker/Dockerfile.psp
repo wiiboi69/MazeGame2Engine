@@ -1,0 +1,11 @@
+# Builds maze-game-2-psp.zip (a MazeGame2/ folder: EBOOT.PBP + assets + levels + worlds).
+# From the repo root:   docker build -f cpp/docker/Dockerfile.psp --output=out .
+# Same toolchain image ScratchEverywhere uses (pspdev/pspdev).
+FROM pspdev/pspdev:latest AS main_builder
+WORKDIR /app
+COPY . .
+# the low-res art must already exist (dotnet run --project cpp/tools/BakeSvgs -- assets --psp)
+RUN psp-cmake -S cpp -B build-psp -DCMAKE_BUILD_TYPE=Release && cmake --build build-psp -j2
+
+FROM scratch AS exporter
+COPY --from=main_builder /app/build-psp/maze-game-2-psp.zip /
